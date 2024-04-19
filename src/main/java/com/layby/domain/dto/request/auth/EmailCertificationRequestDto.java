@@ -12,7 +12,7 @@ import lombok.Setter;
 public class EmailCertificationRequestDto {
 
     @NotBlank
-    String id;
+    String username;
 
     @NotEmpty
     @Email

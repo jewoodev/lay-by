@@ -13,9 +13,8 @@ import java.util.Set;
 public class CertificationEntity {
 
     @Id
-    @Column(name = "cf_id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long certificationId;
+    @Column(name = "username")
+    private String username;
 
     private String email;
     private String certificationNumber;

@@ -1,7 +1,9 @@
 package com.layby.web.service.implement;
 
+import com.layby.domain.dto.request.auth.CheckCertificationRequestDto;
 import com.layby.domain.dto.request.auth.EmailCertificationRequestDto;
 import com.layby.domain.dto.response.ResponseDto;
+import com.layby.domain.dto.response.auth.CheckCertificationResponseDto;
 import com.layby.domain.dto.response.auth.EmailCertificationResponseDto;
 import com.layby.domain.entity.CertificationEntity;
 import com.layby.domain.repository.CertificationRepository;
@@ -16,14 +18,13 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthServiceImpl implements AuthService {
 
-    private final UserRepository userRepository;
     private final CertificationRepository certificationRepository;
     private final EmailProvider emailProvider;
 
     @Override
     public ResponseEntity<? super EmailCertificationResponseDto> emailCertification(EmailCertificationRequestDto dto) {
         try {
-            Long certificationId = Long.parseLong(dto.getId());
+            String username = dto.getUsername();
             String email = dto.getEmail();
 
             String certificationNumber = getCertificationNumber();
@@ -31,7 +32,7 @@ public class AuthServiceImpl implements AuthService {
             boolean isSuccessed = emailProvider.sendCertificationMail(email, certificationNumber);
             if (!isSuccessed) return EmailCertificationResponseDto.mailSendFail();
 
-            CertificationEntity certificationEntity = new CertificationEntity(certificationId, email, certificationNumber);
+            CertificationEntity certificationEntity = new CertificationEntity(username, email, certificationNumber);
             certificationRepository.save(certificationEntity);
 
         } catch (Exception e) {
@@ -39,6 +40,27 @@ public class AuthServiceImpl implements AuthService {
             return ResponseDto.databaseError();
         }
         return EmailCertificationResponseDto.success();
+    }
+
+    @Override
+    public ResponseEntity<? super CheckCertificationResponseDto> checkCertification(CheckCertificationRequestDto dto) {
+        try {
+            String username = dto.getUsername();
+            String email = dto.getEmail();
+            String certificationNumber = dto.getCertificationNumber();
+
+            CertificationEntity certificationEntity = certificationRepository.findByUsername(username);
+            if (certificationEntity == null) return CheckCertificationResponseDto.certificationFail();
+
+            boolean isMatched = certificationEntity.getEmail().equals(email) &&
+                    certificationEntity.getCertificationNumber().equals(certificationNumber);
+            if (!isMatched) return CheckCertificationResponseDto.certificationFail();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseDto.databaseError();
+        }
+
+        return CheckCertificationResponseDto.success();
     }
 
     private String getCertificationNumber() {
