@@ -1,8 +1,10 @@
 package com.layby.web.controller;
 
 import com.layby.domain.dto.request.LoginDto;
+import com.layby.domain.dto.request.auth.CheckCertificationRequestDto;
 import com.layby.domain.dto.request.auth.EmailCertificationRequestDto;
 import com.layby.domain.dto.response.TokenDto;
+import com.layby.domain.dto.response.auth.CheckCertificationResponseDto;
 import com.layby.domain.dto.response.auth.EmailCertificationResponseDto;
 import com.layby.web.jwt.JwtFilter;
 import com.layby.web.jwt.TokenProvider;
@@ -25,7 +27,7 @@ import jakarta.validation.Valid;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/auth")
 public class AuthController {
     private final TokenProvider tokenProvider;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
@@ -53,6 +55,14 @@ public class AuthController {
             @RequestBody @Valid EmailCertificationRequestDto requestBody
             ) {
         ResponseEntity<? super EmailCertificationResponseDto> response = authService.emailCertification(requestBody);
+        return response;
+    }
+
+    @PostMapping("/check-certification")
+    public ResponseEntity<? super CheckCertificationResponseDto> checkCertification(
+            @RequestBody @Valid CheckCertificationRequestDto requestBody
+    ) {
+        ResponseEntity<? super CheckCertificationResponseDto> response = authService.checkCertification(requestBody);
         return response;
     }
 }
