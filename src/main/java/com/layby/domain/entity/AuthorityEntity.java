@@ -7,17 +7,17 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "authority")
-@Entity
-public class Authority {
+@Entity(name = "authority")
+public class AuthorityEntity {
 
     @Column(name = "authority_id")
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
-
     @Column(name = "authority_name", length = 50)
     private String authorityName;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private UserEntity userEntity;
 }
