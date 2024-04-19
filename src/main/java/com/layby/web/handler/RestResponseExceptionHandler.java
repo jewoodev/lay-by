@@ -4,6 +4,7 @@ import com.layby.domain.dto.ErrorDto;
 import com.layby.web.exception.DuplicateMemberException;
 import com.layby.web.exception.NotFoundMemberException;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -25,7 +26,8 @@ public class RestResponseExceptionHandler extends ResponseEntityExceptionHandler
     }
 
     @ResponseStatus(FORBIDDEN)
-    @ExceptionHandler(value = { NotFoundMemberException.class, AccessDeniedException.class })
+    @ExceptionHandler(value = { NotFoundMemberException.class, AccessDeniedException.class,
+            UsernameNotFoundException.class })
     @ResponseBody
     protected ErrorDto forbidden(RuntimeException ex, WebRequest request) {
         return new ErrorDto(FORBIDDEN.value(), ex.getMessage());

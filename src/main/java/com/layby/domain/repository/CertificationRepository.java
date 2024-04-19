@@ -8,4 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface CertificationRepository extends JpaRepository<CertificationEntity, Long> {
+    CertificationEntity findByUsername(String username);
 }
