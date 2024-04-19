@@ -8,8 +8,8 @@ import java.util.Set;
 @Setter @Getter @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "`certification`")
-@Entity
+@Table(name = "certification")
+@Entity(name = "certification")
 public class CertificationEntity {
 
     @Id
@@ -17,5 +17,6 @@ public class CertificationEntity {
     private String username;
 
     private String email;
+
     private String certificationNumber;
 }

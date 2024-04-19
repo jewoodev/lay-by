@@ -1,6 +1,6 @@
 package com.layby.web.service;
 
-import com.layby.domain.entity.User;
+import com.layby.domain.entity.UserEntity;
 import com.layby.domain.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -29,17 +29,17 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException(username + " -> 데이터베이스에서 찾을 수 없습니다."));
     }
 
-    private org.springframework.security.core.userdetails.User createUser(String username, User user) {
-        if (!user.isActivated()) {
-            throw new RuntimeException(username + " -> 활성화되어 있지 않습니다.");
-        }
+    private org.springframework.security.core.userdetails.User createUser(String username, UserEntity userEntity) {
+//        if (!userEntity.isActivated()) {
+//            throw new RuntimeException(username + " -> 활성화되어 있지 않습니다.");
+//        }
 
-        List<GrantedAuthority> grantedAuthorities = user.getAuthorities().stream()
+        List<GrantedAuthority> grantedAuthorities = userEntity.getAuthorities().stream()
                 .map(authority -> new SimpleGrantedAuthority(authority.getAuthorityName()))
                 .collect(Collectors.toList());
 
-        return new org.springframework.security.core.userdetails.User(user.getUsername(),
-                user.getPassword(),
+        return new org.springframework.security.core.userdetails.User(userEntity.getUsername(),
+                userEntity.getPassword(),
                 grantedAuthorities);
     }
 }

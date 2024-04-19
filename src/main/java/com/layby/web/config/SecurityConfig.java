@@ -4,6 +4,7 @@ import com.layby.web.jwt.JwtAccessDeniedHandler;
 import com.layby.web.jwt.JwtAuthenticationEntryPoint;
 import com.layby.web.jwt.JwtSecurityConfig;
 import com.layby.web.jwt.TokenProvider;
+import com.layby.web.util.AES256;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
@@ -41,6 +42,11 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public AES256 personalDataEncoder() {
+        return new AES256();
     }
 
     @Bean

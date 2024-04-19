@@ -1,8 +1,8 @@
 package com.layby.web.service.implement;
 
 import com.layby.domain.dto.UserDto;
-import com.layby.domain.entity.Authority;
-import com.layby.domain.entity.User;
+import com.layby.domain.entity.AuthorityEntity;
+import com.layby.domain.entity.UserEntity;
 import com.layby.domain.repository.UserRepository;
 import com.layby.web.exception.DuplicateMemberException;
 import com.layby.web.exception.NotFoundMemberException;
@@ -29,21 +29,19 @@ public class UserServiceImpl implements UserService {
         }
 
 
-        Authority authority = Authority.builder()
+        AuthorityEntity authorityEntity = AuthorityEntity.builder()
                 .authorityName("ROLE_USER")
                 .build();
 
-        User user = User.builder()
+        UserEntity userEntity = UserEntity.builder()
                 .username(userDto.getUsername())
                 .password(passwordEncoder.encode(userDto.getPassword()))
-                .nickname(userDto.getNickname())
-                .authorities(Collections.singleton(authority))
-                .activated(true)
+                .authorities(Collections.singleton(authorityEntity))
                 .build();
 
-        authority.setUser(user);
+        authorityEntity.setUserEntity(userEntity);
 
-        return UserDto.userToDto(userRepository.save(user));
+        return UserDto.userToDto(userRepository.save(userEntity));
     }
 
     @Override

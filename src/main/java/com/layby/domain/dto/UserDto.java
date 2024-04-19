@@ -1,6 +1,6 @@
 package com.layby.domain.dto;
 
-import com.layby.domain.entity.User;
+import com.layby.domain.entity.UserEntity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
@@ -32,13 +32,12 @@ public class UserDto {
 
     private Set<AuthorityDto> authorityDtoSet;
 
-    public static UserDto userToDto(User user) {
-        if (user == null) return null;
+    public static UserDto userToDto(UserEntity userEntity) {
+        if (userEntity == null) return null;
 
         return UserDto.builder()
-                .username(user.getUsername())
-                .nickname(user.getNickname())
-                .authorityDtoSet(user.getAuthorities().stream()
+                .username(userEntity.getUsername())
+                .authorityDtoSet(userEntity.getAuthorities().stream()
                         .map(authority -> AuthorityDto.builder().authorityName(authority.getAuthorityName()).build())
                         .collect(Collectors.toSet()))
                 .build();

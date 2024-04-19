@@ -4,11 +4,8 @@ import com.layby.domain.common.ResponseCode;
 import com.layby.domain.common.ResponseMessage;
 import com.layby.domain.dto.response.ResponseDto;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.yaml.snakeyaml.emitter.Emitable;
 
 @Getter
 public class EmailCertificationResponseDto extends ResponseDto {
@@ -23,7 +20,7 @@ public class EmailCertificationResponseDto extends ResponseDto {
     }
 
     public static ResponseEntity<ResponseDto> duplicateId() {
-        ResponseDto responseBody = new ResponseDto(ResponseCode.DUPLICATED_ID, ResponseMessage.DUPLICATE_ID);
+        ResponseDto responseBody = new ResponseDto(ResponseCode.DUPLICATED_USERNAME, ResponseMessage.DUPLICATE_USERNAME);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseBody);
     }
 
