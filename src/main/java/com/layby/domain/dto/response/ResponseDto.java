@@ -15,19 +15,10 @@ public class ResponseDto {
     private String message;
 
     public ResponseDto() {
-        this.code = ResponseCode.SUCCESS;
-        this.message = ResponseMessage.SUCCESS;
+        this.code = "SU";
+        this.message = "Success.";
     }
 
-    public static ResponseEntity<ResponseDto> successful() {
-        ResponseDto responseBody = new ResponseDto();
-        return ResponseEntity.status(HttpStatus.OK).body(responseBody);
-    }
-
-    public static ResponseEntity<ResponseDto> databaseError() {
-        ResponseDto responseBody = new ResponseDto(ResponseCode.DATABASE_ERROR, ResponseMessage.DATABASE_ERROR);
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(responseBody);
-    }
 
     public static ResponseEntity<ResponseDto> validationFail() {
         ResponseDto responseBody = new ResponseDto(ResponseCode.VALIDATION_FAIL, ResponseMessage.VALIDATION_FAIL);

@@ -2,12 +2,12 @@ package com.layby.web.service.implement;
 
 import com.layby.domain.common.Role;
 import com.layby.domain.dto.request.auth.*;
-import com.layby.domain.dto.response.ResponseDto;
 import com.layby.domain.dto.response.auth.*;
 import com.layby.domain.entity.CertificationEntity;
 import com.layby.domain.entity.UserEntity;
 import com.layby.domain.repository.CertificationRepository;
 import com.layby.domain.repository.UserRepository;
+import com.layby.web.exception.*;
 import com.layby.web.jwt.JwtProvider;
 import com.layby.web.provider.EmailProvider;
 import com.layby.web.service.AuthService;
@@ -19,6 +19,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+
+import static com.layby.domain.common.ErrorCode.*;
 
 @RequiredArgsConstructor
 @Service
@@ -38,11 +40,11 @@ public class AuthServiceImpl implements AuthService {
         try {
             String username = dto.getUsername();
             boolean isExist = userRepository.existsByUsername(username);
-            if (isExist) return UsernameCheckReponseDto.duplicatedUsername();
+            if (isExist) throw new DuplicatedUsernameException(DUPLICATED_USERNAME.getMessage());
 
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseDto.databaseError();
+            throw new DatabaseErrorException(DATABASE_ERROR.getMessage());
         }
 
         return UsernameCheckReponseDto.success();
@@ -57,12 +59,12 @@ public class AuthServiceImpl implements AuthService {
             String email = personalDataEncoder.decode(encodedEmail);
 
             boolean isExist = userRepository.existsByUsername(username);
-            if (!isExist) return EmailCertificationResponseDto.mailSendFail();
+            if (!isExist) throw new MailFailedException(MAIL_FAIL.getMessage());
 
             String certificationNumber = getCertificationNumber();
 
             boolean isSuccessed = emailProvider.sendCertificationMail(email, certificationNumber);
-            if (!isSuccessed) return EmailCertificationResponseDto.mailSendFail();
+            if (!isSuccessed) throw new MailFailedException(MAIL_FAIL.getMessage());
 
             boolean isExistCF = certificationRepository.existsByUsername(username);
             if (isExistCF) certificationRepository.deleteAllByUsername(username);
@@ -72,7 +74,7 @@ public class AuthServiceImpl implements AuthService {
 
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseDto.databaseError();
+            throw new DatabaseErrorException(DATABASE_ERROR.getMessage());
         }
 
         return EmailCertificationResponseDto.success();
@@ -87,12 +89,12 @@ public class AuthServiceImpl implements AuthService {
             String certificationNumber = dto.getCertificationNumber();
 
             boolean isExist = certificationRepository.existsByUsername(username);
-            if (!isExist) return CheckCertificationResponseDto.certificationFail();
+            if (!isExist) throw new CertificationFailedException(CERTIFICATION_FAIL.getMessage());
 
             CertificationEntity certificationEntity = certificationRepository.findByUsername(username);
             boolean isMatched = certificationEntity.getEmail().equals(email) &&
                     certificationEntity.getCertificationNumber().equals(certificationNumber);
-            if (!isMatched) return CheckCertificationResponseDto.certificationFail();
+            if (!isMatched) throw new CertificationFailedException(CERTIFICATION_FAIL.getMessage());
 
             UserEntity userEntity = userRepository.findByUsername(username);
 
@@ -102,7 +104,7 @@ public class AuthServiceImpl implements AuthService {
 
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseDto.databaseError();
+            throw new DatabaseErrorException(DATABASE_ERROR.getMessage());
         }
 
         return CheckCertificationResponseDto.success();
@@ -114,7 +116,7 @@ public class AuthServiceImpl implements AuthService {
         try {
             String username = dto.getUsername();
             boolean isExist = userRepository.existsByUsername(username);
-            if (isExist) return SignUpResponseDto.duplicatedUsername();
+            if (isExist) throw new DuplicatedUsernameException(DUPLICATED_USERNAME.getMessage());
             String encodedUsername = personalDataEncoder.encode(username);
             dto.setUsername(encodedUsername);
 
@@ -135,7 +137,7 @@ public class AuthServiceImpl implements AuthService {
 
         } catch (Exception e) {
             e.printStackTrace();
-            return SignUpResponseDto.internalError();
+            throw new InternalServerErrorException(INTERNAL_SERVER_ERROR.getMessage());
         }
         return SignUpResponseDto.success();
     }
@@ -149,18 +151,18 @@ public class AuthServiceImpl implements AuthService {
             String encodedUsername = dto.getUsername();
             String username = personalDataEncoder.decode(encodedUsername);
             UserEntity userEntity = userRepository.findByUsername(username);
-            if (userEntity == null) return SignInResponseDto.signInFail();
+            if (userEntity == null) throw new SignInFailedException(SIGN_IN_FAIL.getMessage());
 
             String password = dto.getPassword();
             String encodedPassword = userEntity.getPassword();
             boolean isMatched = passwordEncoder.matches(password, encodedPassword);
-            if (!isMatched) return SignInResponseDto.signInFail();
+            if (!isMatched) throw new SignInFailedException(SIGN_IN_FAIL.getMessage());
 
             token = jwtProvider.createToken(username);
 
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseDto.databaseError();
+            throw new InternalServerErrorException(INTERNAL_SERVER_ERROR.getMessage());
         }
 
         return SignInResponseDto.success(token);

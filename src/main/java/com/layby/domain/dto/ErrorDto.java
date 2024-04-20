@@ -1,10 +1,6 @@
 package com.layby.domain.dto;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import lombok.Getter;
-import org.springframework.validation.FieldError;
 
 @Getter
 public class ErrorDto {

@@ -1,6 +1,5 @@
 package com.layby.domain.dto.response;
 
-import com.layby.domain.entity.UserEntity;
 import lombok.Getter;
 import lombok.Setter;
 

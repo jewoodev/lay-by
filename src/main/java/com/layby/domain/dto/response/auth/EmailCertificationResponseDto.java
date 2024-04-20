@@ -18,14 +18,4 @@ public class EmailCertificationResponseDto extends ResponseDto {
         EmailCertificationResponseDto responseBody = new EmailCertificationResponseDto();
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
-
-    public static ResponseEntity<ResponseDto> duplicateId() {
-        ResponseDto responseBody = new ResponseDto(ResponseCode.DUPLICATED_USERNAME, ResponseMessage.DUPLICATE_USERNAME);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseBody);
-    }
-
-    public static ResponseEntity<ResponseDto> mailSendFail() {
-        ResponseDto responseBody = new ResponseDto(ResponseCode.MAIL_FAIL, ResponseMessage.MAIL_FAIL);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseBody);
-    }
 }

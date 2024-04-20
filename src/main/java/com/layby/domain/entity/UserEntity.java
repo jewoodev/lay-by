@@ -1,7 +1,6 @@
 package com.layby.domain.entity;
 
 import com.layby.domain.common.Role;
-import com.layby.domain.dto.request.PhoneNumberUpdateRequestDto;
 import com.layby.domain.dto.request.auth.SignUpRequestDto;
 import lombok.*;
 import jakarta.persistence.*;
