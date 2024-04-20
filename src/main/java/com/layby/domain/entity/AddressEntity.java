@@ -28,6 +28,6 @@ public class AddressEntity extends BaseTimeEntity {
     @JoinColumn(name = "user_id")
     private UserEntity userEntity;
 
-    @OneToOne(mappedBy = "address", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "addressEntity", fetch = FetchType.LAZY)
     private DeliveryEntity deliveryEntity;
 }

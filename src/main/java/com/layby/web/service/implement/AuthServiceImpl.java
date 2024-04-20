@@ -5,7 +5,9 @@ import com.layby.domain.dto.request.auth.EmailCertificationRequestDto;
 import com.layby.domain.dto.response.ResponseDto;
 import com.layby.domain.dto.response.auth.CheckCertificationResponseDto;
 import com.layby.domain.dto.response.auth.EmailCertificationResponseDto;
+import com.layby.domain.entity.AuthorityEntity;
 import com.layby.domain.entity.CertificationEntity;
+import com.layby.domain.entity.UserEntity;
 import com.layby.domain.repository.CertificationRepository;
 import com.layby.domain.repository.UserRepository;
 import com.layby.web.provider.EmailProvider;
@@ -13,6 +15,10 @@ import com.layby.web.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+import java.util.Collections;
 
 @RequiredArgsConstructor
 @Service
@@ -20,12 +26,16 @@ public class AuthServiceImpl implements AuthService {
 
     private final CertificationRepository certificationRepository;
     private final EmailProvider emailProvider;
+    private final UserRepository userRepository;
 
     @Override
     public ResponseEntity<? super EmailCertificationResponseDto> emailCertification(EmailCertificationRequestDto dto) {
         try {
             String username = dto.getUsername();
             String email = dto.getEmail();
+
+            boolean isExist = userRepository.existsByUsername(username);
+            if (!isExist) return EmailCertificationResponseDto.mailSendFail();
 
             String certificationNumber = getCertificationNumber();
 
@@ -39,10 +49,12 @@ public class AuthServiceImpl implements AuthService {
             e.printStackTrace();
             return ResponseDto.databaseError();
         }
+
         return EmailCertificationResponseDto.success();
     }
 
     @Override
+    @Transactional
     public ResponseEntity<? super CheckCertificationResponseDto> checkCertification(CheckCertificationRequestDto dto) {
         try {
             String username = dto.getUsername();
@@ -55,6 +67,15 @@ public class AuthServiceImpl implements AuthService {
             boolean isMatched = certificationEntity.getEmail().equals(email) &&
                     certificationEntity.getCertificationNumber().equals(certificationNumber);
             if (!isMatched) return CheckCertificationResponseDto.certificationFail();
+
+            UserEntity user = userRepository.findByUsername(username);
+            AuthorityEntity authorityEntity = AuthorityEntity.builder()
+                                                        .userEntity(user)
+                                                        .authorityName("ROLE_USER")
+                                                                .build();
+            user.setAuthorities(Collections.singleton(authorityEntity));
+            user.setEmailVerifiedAt(LocalDateTime.now());
+
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseDto.databaseError();

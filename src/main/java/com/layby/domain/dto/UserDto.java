@@ -26,11 +26,12 @@ public class UserDto {
     @Size(min = 3, max = 100)
     private String password;
 
-    @NotNull
-    @Size(min = 3, max = 50)
-    private String nickname;
-
     private Set<AuthorityDto> authorityDtoSet;
+
+    public UserDto(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
 
     public static UserDto userToDto(UserEntity userEntity) {
         if (userEntity == null) return null;

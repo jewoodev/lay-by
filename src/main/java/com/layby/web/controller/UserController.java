@@ -1,15 +1,16 @@
 package com.layby.web.controller;
 
 import com.layby.domain.dto.UserDto;
+import com.layby.domain.dto.request.auth.SignUpRequestDto;
 import com.layby.web.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.Valid;
 import java.io.IOException;
 
 @RequiredArgsConstructor
@@ -31,9 +32,9 @@ public class UserController {
 
     @PostMapping("/signup")
     public ResponseEntity<UserDto> signup(
-            @Valid @RequestBody UserDto userDto
-    ) {
-        return ResponseEntity.ok(userService.signup(userDto));
+            @Valid @RequestBody SignUpRequestDto dto
+            ) {
+        return ResponseEntity.ok(userService.signup(dto));
     }
 
     @GetMapping("/user")
