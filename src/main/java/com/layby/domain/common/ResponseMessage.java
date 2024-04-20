@@ -12,4 +12,6 @@ public interface ResponseMessage {
 
     String MAIL_FAIL = "Mail send failed.";
     String DATABASE_ERROR = "Database error.";
+    String INTERNAL_SERVER_ERROR = "ISE";
+
 }

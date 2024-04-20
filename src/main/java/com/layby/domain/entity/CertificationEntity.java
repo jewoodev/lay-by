@@ -3,8 +3,6 @@ package com.layby.domain.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Set;
-
 @Setter @Getter @Builder
 @AllArgsConstructor
 @NoArgsConstructor

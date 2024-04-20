@@ -1,13 +1,14 @@
 package com.layby.domain.entity;
 
+import com.layby.domain.common.Role;
+import com.layby.domain.dto.request.auth.SignUpRequestDto;
 import lombok.*;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 
-@Setter @Getter @Builder
+@Getter @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "user")
@@ -37,9 +38,21 @@ public class UserEntity extends BaseTimeEntity {
     @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL)
     private List<AddressEntity> addressEntityList;
 
-    @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL)
-    private Set<AuthorityEntity> authorities;
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
     @OneToMany(mappedBy = "userEntity", cascade = CascadeType.ALL)
     private List<OrderEntity> orders;
+
+    public UserEntity(SignUpRequestDto dto) {
+        this.username = dto.getUsername();
+        this.email = dto.getEmail();
+        this.password = dto.getPassword();
+        this.phoneNumber = dto.getPhoneNumber();
+    }
+
+    public void updateAfterCertification(Role role, LocalDateTime emailVerifiedAt) {
+        this.role = role;
+        this.emailVerifiedAt = emailVerifiedAt;
+    }
 }
