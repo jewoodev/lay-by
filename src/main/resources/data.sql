@@ -1,6 +1,1 @@
-insert into `user` (username, password, nickname, activated) values ('admin', '$2a$08$lDnHPz7eUkSi6ao14Twuau08mzhWrL4kyZGGU5xfiGALO/Vxd5DOi', 'admin', 1);
-insert into `user` (username, password, nickname, activated) values ('userEntity', '$2a$08$UkVvwpULis18S19S5pZFn.YHPZt3oaqHZnDwqbCW9pft6uFtkXKDC', 'userEntity', 1);
-
-insert into `authority` (user_id, authority_name) values (1, 'ROLE_USER');
-insert into `authority` (user_id, authority_name) values (1, 'ROLE_ADMIN');
-insert into `authority` (user_id, authority_name) values (2, 'ROLE_USER');
+insert into `user`(user_id, password, username, email, email_verified_at, role, phone_number, created_date, modified_date)values ('1', '$2a$10$dAOai95697T.n6LU5rw5muOGiHcY9cqUAmJKlKQSBHkFkuS63k8/S', 'aO3fhe4oundJIZJlDmDL4g==', 'BjEAfBPzN6AdNKn6aduSJR27rM6JgNhGHgfe0pzCGTY=', '2024-04-21 02:30:33.729232', 'USER', 'lov4b+CEO2xBvTjCt64P+Q==', '2024-04-21 02:26:33.729232', '2024-04-21 02:26:33.729232');

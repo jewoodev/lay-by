@@ -14,7 +14,7 @@ public class EmailCertificationRequestDto {
     @NotBlank
     String username;
 
-    @NotEmpty
+    @NotBlank
     @Email
     private String email;
 

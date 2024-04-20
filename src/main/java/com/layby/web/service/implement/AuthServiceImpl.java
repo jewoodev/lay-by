@@ -51,8 +51,10 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public ResponseEntity<? super EmailCertificationResponseDto> emailCertification(EmailCertificationRequestDto dto) {
         try {
-            String username = dto.getUsername();
-            String email = dto.getEmail();
+            String encodedUsername = dto.getUsername();
+            String username = personalDataEncoder.decode(encodedUsername);
+            String encodedEmail = dto.getEmail();
+            String email = personalDataEncoder.decode(encodedEmail);
 
             boolean isExist = userRepository.existsByUsername(username);
             if (!isExist) return EmailCertificationResponseDto.mailSendFail();
@@ -113,6 +115,8 @@ public class AuthServiceImpl implements AuthService {
             String username = dto.getUsername();
             boolean isExist = userRepository.existsByUsername(username);
             if (isExist) return SignUpResponseDto.duplicatedUsername();
+            String encodedUsername = personalDataEncoder.encode(username);
+            dto.setUsername(encodedUsername);
 
             String password = dto.getPassword();
             String encodedPassword= passwordEncoder.encode(password);
@@ -142,7 +146,8 @@ public class AuthServiceImpl implements AuthService {
         String token = null;
 
         try {
-            String username = dto.getUsername();
+            String encodedUsername = dto.getUsername();
+            String username = personalDataEncoder.decode(encodedUsername);
             UserEntity userEntity = userRepository.findByUsername(username);
             if (userEntity == null) return SignInResponseDto.signInFail();
 
@@ -165,7 +170,7 @@ public class AuthServiceImpl implements AuthService {
 
         StringBuilder certificationNumber = new StringBuilder();
 
-        for (int i = 0; i < 4; i++) {
+        for (int i = 0; i < 6; i++) {
             certificationNumber.append((int) (Math.random() * 10));
         }
 

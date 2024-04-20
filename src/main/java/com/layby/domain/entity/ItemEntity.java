@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Table(name = "item")
 @Entity(name = "item")
-public class ItemEntity {
+public class ItemEntity extends BaseTimeEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "item_id")

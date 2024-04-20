@@ -1,5 +1,6 @@
 package com.layby.domain.entity;
 
+import com.layby.domain.dto.request.AddressRequestDto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -28,6 +29,9 @@ public class AddressEntity extends BaseTimeEntity {
     @JoinColumn(name = "user_id")
     private UserEntity userEntity;
 
-    @OneToOne(mappedBy = "addressEntity", fetch = FetchType.LAZY)
-    private DeliveryEntity deliveryEntity;
+    public void updateAddressEntity(AddressRequestDto dto) {
+        this.city = dto.getCity();
+        this.street = dto.getStreet();
+        this.zipCode = dto.getZipCode();
+    }
 }

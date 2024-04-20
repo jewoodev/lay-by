@@ -1,6 +1,7 @@
 package com.layby.domain.entity;
 
 import com.layby.domain.common.Role;
+import com.layby.domain.dto.request.PhoneNumberUpdateRequestDto;
 import com.layby.domain.dto.request.auth.SignUpRequestDto;
 import lombok.*;
 import jakarta.persistence.*;
@@ -54,5 +55,13 @@ public class UserEntity extends BaseTimeEntity {
     public void updateAfterCertification(Role role, LocalDateTime emailVerifiedAt) {
         this.role = role;
         this.emailVerifiedAt = emailVerifiedAt;
+    }
+
+    public void updatePhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public void updatePassword(String password) {
+        this.password = password;
     }
 }
