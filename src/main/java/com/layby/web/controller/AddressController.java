@@ -2,7 +2,6 @@ package com.layby.web.controller;
 
 import com.layby.domain.dto.request.AddressRequestDto;
 import com.layby.domain.dto.response.AddressUpdateResponseDto;
-import com.layby.domain.dto.response.ResponseDto;
 import com.layby.web.jwt.JwtProvider;
 import com.layby.web.service.AddressService;
 import jakarta.validation.Valid;
