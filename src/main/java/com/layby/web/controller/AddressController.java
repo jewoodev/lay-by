@@ -24,7 +24,7 @@ public class AddressController {
 
     @PutMapping("/{address_id}/update")
     @PreAuthorize("hasAnyRole('ROLE_USER')")
-    public ResponseEntity<AddressUpdateResponseDto> updateAddress(
+    public ResponseEntity<? super AddressUpdateResponseDto> updateAddress(
             @PathVariable(name = "address_id") Long addressId,
             @RequestBody @Valid AddressRequestDto dto
     ) {
@@ -33,7 +33,7 @@ public class AddressController {
 
     @PostMapping("/add")
     @PreAuthorize("hasAnyRole('ROLE_USER')")
-    public ResponseEntity<AddressUpdateResponseDto> addAddress(
+    public ResponseEntity<? super AddressUpdateResponseDto> addAddress(
             Authentication authentication,
             @RequestBody @Valid AddressRequestDto dto
     ) {

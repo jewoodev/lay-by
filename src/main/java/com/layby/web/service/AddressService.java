@@ -11,7 +11,7 @@ public interface AddressService {
     AddressEntity findByAddressId(Long addressId);
 
 
-    ResponseEntity<AddressUpdateResponseDto> updateAddress(Long addressId, AddressRequestDto dto);
+    ResponseEntity<? super AddressUpdateResponseDto> updateAddress(Long addressId, AddressRequestDto dto);
 
-    ResponseEntity<AddressUpdateResponseDto> addAddress(String username, AddressRequestDto dto);
+    ResponseEntity<? super AddressUpdateResponseDto> addAddress(String username, AddressRequestDto dto);
 }

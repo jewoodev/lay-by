@@ -2,8 +2,10 @@ package com.layby.domain.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "item")
@@ -19,6 +21,9 @@ public class ItemEntity extends BaseTimeEntity {
 
     @Column(name = "price")
     private int price;
+
+    @Column(name = "details")
+    private String details;
 
     @Column(name = "stock_quantity")
     private Long stockQuantity;

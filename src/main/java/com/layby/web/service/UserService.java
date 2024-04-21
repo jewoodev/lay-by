@@ -20,8 +20,8 @@ public interface UserService {
     UserEntity findByUsername(String username);
 
     @Transactional
-    ResponseEntity<PhoneNumberUpdateResponseDto> updatePhoneNumber(Long userId, PhoneNumberUpdateRequestDto dto);
+    ResponseEntity<? super PhoneNumberUpdateResponseDto> updatePhoneNumber(Long userId, PhoneNumberUpdateRequestDto dto);
 
     @Transactional
-    ResponseEntity<UserPasswordUpdateResponseDto> updatePassword(Long userId, UserPasswordUpdateRequestDto dto);
+    ResponseEntity<? super UserPasswordUpdateResponseDto> updatePassword(Long userId, UserPasswordUpdateRequestDto dto);
 }

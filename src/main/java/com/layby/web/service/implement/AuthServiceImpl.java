@@ -126,6 +126,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    @Transactional
     public ResponseEntity<? super SignUpResponseDto> signUp(SignUpRequestDto dto) {
 
         try {
@@ -158,6 +159,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    @Transactional
     public ResponseEntity<? super SignInResponseDto> signIn(SignInRequestDto dto) {
 
         String token = null;

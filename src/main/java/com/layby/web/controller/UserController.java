@@ -30,7 +30,7 @@ public class UserController {
 
     @PatchMapping("/{user_id}/update-phone-number")
     @PreAuthorize("hasAnyRole('ROLE_USER')")
-    public ResponseEntity<PhoneNumberUpdateResponseDto> updatePhoneNumber(
+    public ResponseEntity<? super PhoneNumberUpdateResponseDto> updatePhoneNumber(
             @PathVariable(name = "user_id") Long userId,
             @RequestBody @Valid PhoneNumberUpdateRequestDto dto
     ) {
@@ -39,7 +39,7 @@ public class UserController {
 
     @PatchMapping("/{user_id}/update-password")
     @PreAuthorize("hasAnyRole('ROLE_USER')")
-    public ResponseEntity<UserPasswordUpdateResponseDto> updatePassword(
+    public ResponseEntity<? super UserPasswordUpdateResponseDto> updatePassword(
             @PathVariable(name = "user_id") Long userId,
             @RequestBody @Valid UserPasswordUpdateRequestDto dto
     ) {
