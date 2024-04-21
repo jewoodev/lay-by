@@ -1,10 +1,10 @@
 package com.layby.domain.repository;
 
-import com.layby.domain.entity.CertificationEntity;
+import com.layby.domain.entity.MailCertification;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface CertificationRepository extends JpaRepository<CertificationEntity, Long> {
-    CertificationEntity findByUsername(String username);
+public interface CertificationRepository extends JpaRepository<MailCertification, Long> {
+    MailCertification findByUsername(String username);
 
     boolean existsByUsername(String username);
 

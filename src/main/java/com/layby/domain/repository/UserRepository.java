@@ -1,17 +1,15 @@
 package com.layby.domain.repository;
 
-import com.layby.domain.entity.UserEntity;
+import com.layby.domain.entity.User;
 
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface UserRepository extends JpaRepository<UserEntity, Long> {
-    @EntityGraph(attributePaths = "authorities")
-    Optional<UserEntity> findOneWithAuthoritiesByUsername(String username);
+public interface UserRepository extends JpaRepository<User, Long> {
 
     boolean existsByUsername(String username);
 
-    UserEntity findByUsername(String username);
+    User findByUsername(String username);
 }

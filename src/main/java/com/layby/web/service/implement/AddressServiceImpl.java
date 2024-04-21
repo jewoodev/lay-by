@@ -2,8 +2,8 @@ package com.layby.web.service.implement;
 
 import com.layby.domain.dto.request.AddressRequestDto;
 import com.layby.domain.dto.response.AddressUpdateResponseDto;
-import com.layby.domain.entity.AddressEntity;
-import com.layby.domain.entity.UserEntity;
+import com.layby.domain.entity.Address;
+import com.layby.domain.entity.User;
 import com.layby.domain.repository.AddressRepository;
 import com.layby.web.exception.InternalServerErrorException;
 import com.layby.web.service.AddressService;
@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import static com.layby.domain.common.ErrorCode.*;
 
 @Slf4j
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
 public class AddressServiceImpl implements AddressService {
@@ -27,15 +28,15 @@ public class AddressServiceImpl implements AddressService {
     private final AES256 personalDataEncoder;
 
     @Override
-    public AddressEntity findByAddressId(Long addressId) {
+    public Address findByAddressId(Long addressId) {
         return addressRepository.findById(addressId).orElse(null);
     }
 
     @Override
     @Transactional
     public ResponseEntity<AddressUpdateResponseDto> updateAddress(Long addressId, AddressRequestDto dto) {
-        AddressEntity foundAddressEntity = addressRepository.findById(addressId).orElse(null);
-        foundAddressEntity.updateAddressEntity(dto);
+        Address foundAddress = addressRepository.findById(addressId).orElse(null);
+        foundAddress.updateAddressEntity(dto);
 
         return AddressUpdateResponseDto.success();
     }
@@ -57,14 +58,14 @@ public class AddressServiceImpl implements AddressService {
         log.info("dto's street = {}", dto.getStreet());
         log.info("dto's zipCode = {}", dto.getZipCode());
 
-        UserEntity userEntity = userService.findByUsername(encodedUsername);
-        AddressEntity addressEntity = AddressEntity.builder()
+        User user = userService.findByUsername(encodedUsername);
+        Address address = Address.builder()
                 .city(dto.getCity())
                 .street(dto.getStreet())
                 .zipCode(dto.getZipCode())
-                .userEntity(userEntity)
+                .user(user)
                 .build();
-        addressRepository.save(addressEntity);
+        addressRepository.save(address);
 
         return AddressUpdateResponseDto.success();
     }

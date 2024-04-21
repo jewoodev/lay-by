@@ -1,8 +1,8 @@
 package com.layby.domain.repository;
 
-import com.layby.domain.entity.AddressEntity;
+import com.layby.domain.entity.Address;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface AddressRepository extends JpaRepository<AddressEntity, Long> {
+public interface AddressRepository extends JpaRepository<Address, Long> {
 
 }

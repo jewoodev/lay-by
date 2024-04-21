@@ -1,6 +1,6 @@
 package com.layby.domain.dto.response;
 
-import com.layby.domain.entity.ItemEntity;
+import com.layby.domain.entity.Item;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,9 +15,9 @@ public class ItemResponseDto {
 
     private String details;
 
-    public ItemResponseDto(ItemEntity itemEntity) {
-        this.itemName = itemEntity.getItemName();
-        this.price = itemEntity.getPrice();
-        this.details = itemEntity.getDetails();
+    public ItemResponseDto(Item item) {
+        this.itemName = item.getItemName();
+        this.price = item.getPrice();
+        this.details = item.getDetails();
     }
 }

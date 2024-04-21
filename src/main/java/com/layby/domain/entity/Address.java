@@ -4,12 +4,12 @@ import com.layby.domain.dto.request.AddressRequestDto;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Setter @Getter @Builder
+@Getter @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "address")
 @Entity(name = "address")
-public class AddressEntity extends BaseTimeEntity {
+public class Address extends BaseTimeEntity {
 
     @Id
     @Column(name = "address_id")
@@ -27,7 +27,7 @@ public class AddressEntity extends BaseTimeEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private UserEntity userEntity;
+    private User user;
 
     public void updateAddressEntity(AddressRequestDto dto) {
         this.city = dto.getCity();

@@ -3,8 +3,8 @@ package com.layby.web.service.implement;
 import com.layby.domain.common.Role;
 import com.layby.domain.dto.request.auth.*;
 import com.layby.domain.dto.response.auth.*;
-import com.layby.domain.entity.CertificationEntity;
-import com.layby.domain.entity.UserEntity;
+import com.layby.domain.entity.MailCertification;
+import com.layby.domain.entity.User;
 import com.layby.domain.repository.CertificationRepository;
 import com.layby.domain.repository.UserRepository;
 import com.layby.web.exception.*;
@@ -37,6 +37,7 @@ public class AuthServiceImpl implements AuthService {
     private final EmailProvider emailProvider;
 
     @Override
+    @Transactional(readOnly = true)
     public ResponseEntity<? super UsernameCheckReponseDto> usernameCheck(UsernameCheckRequestDto dto) {
 
         try {
@@ -53,6 +54,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    @Transactional
     public ResponseEntity<? super EmailCertificationResponseDto> emailCertification(EmailCertificationRequestDto dto) {
 
         String username = null;
@@ -83,8 +85,8 @@ public class AuthServiceImpl implements AuthService {
             boolean isExistCF = certificationRepository.existsByUsername(username);
             if (isExistCF) certificationRepository.deleteAllByUsername(username);
 
-            CertificationEntity certificationEntity = new CertificationEntity(username, email, certificationNumber);
-            certificationRepository.save(certificationEntity);
+            MailCertification mailCertification = new MailCertification(username, email, certificationNumber);
+            certificationRepository.save(mailCertification);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -97,23 +99,33 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Transactional
     public ResponseEntity<? super CheckCertificationResponseDto> checkCertification(CheckCertificationRequestDto dto) {
+
+        String username = dto.getUsername();
+        String email = dto.getEmail();
+        String certificationNumber = dto.getCertificationNumber();
+
+        boolean isExist = certificationRepository.existsByUsername(username);
+        if (!isExist) throw new CertificationFailedException(CERTIFICATION_FAIL.getMessage());
+
+        MailCertification mailCertification = certificationRepository.findByUsername(username);
+        boolean isMatched = mailCertification.getEmail().equals(email) &&
+                mailCertification.getCertificationNumber().equals(certificationNumber);
+        if (!isMatched) throw new CertificationFailedException(CERTIFICATION_FAIL.getMessage());
+
+        String encodedUsername = null;
+
         try {
-            String username = dto.getUsername();
-            String email = dto.getEmail();
-            String certificationNumber = dto.getCertificationNumber();
+            encodedUsername = personalDataEncoder.encode(username);
 
-            boolean isExist = certificationRepository.existsByUsername(username);
-            if (!isExist) throw new CertificationFailedException(CERTIFICATION_FAIL.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new InternalServerErrorException(INTERNAL_SERVER_ERROR.getMessage());
+        }
 
-            CertificationEntity certificationEntity = certificationRepository.findByUsername(username);
-            boolean isMatched = certificationEntity.getEmail().equals(email) &&
-                    certificationEntity.getCertificationNumber().equals(certificationNumber);
-            if (!isMatched) throw new CertificationFailedException(CERTIFICATION_FAIL.getMessage());
+        try {
+            User user = userRepository.findByUsername(encodedUsername);
 
-            String encodedUsername = personalDataEncoder.encode(username);
-            UserEntity userEntity = userRepository.findByUsername(encodedUsername);
-
-            userEntity.updateAfterCertification(Role.USER, LocalDateTime.now());
+            user.updateAfterCertification(Role.USER, LocalDateTime.now());
 
             certificationRepository.deleteAllByUsername(username);
 
@@ -148,8 +160,8 @@ public class AuthServiceImpl implements AuthService {
             String encodedPhoneNumber = personalDataEncoder.encode(phoneNumber);
             dto.setPhoneNumber(encodedPhoneNumber);
 
-            UserEntity userEntity = new UserEntity(dto);
-            userRepository.save(userEntity);
+            User user = new User(dto);
+            userRepository.save(user);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -167,11 +179,11 @@ public class AuthServiceImpl implements AuthService {
         try {
             String username = dto.getUsername();
             String encodedUsername = personalDataEncoder.encode(username);
-            UserEntity userEntity = userRepository.findByUsername(encodedUsername);
-            if (userEntity == null) throw new SignInFailedException(SIGN_IN_FAIL.getMessage());
+            User user = userRepository.findByUsername(encodedUsername);
+            if (user == null) throw new SignInFailedException(SIGN_IN_FAIL.getMessage());
 
             String password = dto.getPassword();
-            String encodedPassword = userEntity.getPassword();
+            String encodedPassword = user.getPassword();
             boolean isMatched = passwordEncoder.matches(password, encodedPassword);
             if (!isMatched) throw new SignInFailedException(SIGN_IN_FAIL.getMessage());
 

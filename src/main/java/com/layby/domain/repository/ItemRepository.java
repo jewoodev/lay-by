@@ -1,7 +1,7 @@
 package com.layby.domain.repository;
 
-import com.layby.domain.entity.ItemEntity;
+import com.layby.domain.entity.Item;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface ItemRepository extends JpaRepository<ItemEntity, Long> {
+public interface ItemRepository extends JpaRepository<Item, Long> {
 }

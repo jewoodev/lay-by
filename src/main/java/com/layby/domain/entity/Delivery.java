@@ -4,12 +4,12 @@ import com.layby.domain.common.DeliveryStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Setter @Getter @Builder
+@Getter @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "delivery")
 @Entity(name = "delivery")
-public class DeliveryEntity {
+public class Delivery {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "delivery_id")
@@ -17,11 +17,15 @@ public class DeliveryEntity {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "address_id")
-    private AddressEntity addressEntity;
+    private Address address;
 
     @Enumerated(EnumType.STRING)
     private DeliveryStatus deliveryStatus;
 
-    @OneToOne(mappedBy = "deliveryEntity", fetch = FetchType.LAZY)
-    private OrderEntity orderEntity;
+    @OneToOne(mappedBy = "delivery", fetch = FetchType.LAZY)
+    private Order order;
+
+    public void mappingOrderEntity(Order order) {
+        this.order = order;
+    }
 }

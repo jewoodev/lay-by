@@ -3,12 +3,12 @@ package com.layby.domain.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-@Setter @Getter @Builder
+@Getter @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Table(name = "certification")
 @Entity(name = "certification")
-public class CertificationEntity {
+public class MailCertification {
 
     @Id
     @Column(name = "username")
