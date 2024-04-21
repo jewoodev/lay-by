@@ -1,10 +1,13 @@
 package com.layby.web.util;
 
+import org.springframework.stereotype.Component;
+
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.util.Base64;
 
+@Component
 public class AES256 {
 
     public static String alg = "AES/CBC/PKCS5Padding";

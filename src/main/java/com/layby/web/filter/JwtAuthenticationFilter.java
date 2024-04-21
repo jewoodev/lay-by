@@ -3,6 +3,7 @@ package com.layby.web.filter;
 import com.layby.domain.entity.UserEntity;
 import com.layby.domain.repository.UserRepository;
 import com.layby.web.jwt.JwtProvider;
+import com.layby.web.util.AES256;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -29,6 +30,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtProvider jwtProvider;
     private final UserRepository userRepository;
+    private final AES256 personalDataEncoder;
 
     @Override
     protected void doFilterInternal(
@@ -48,7 +50,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 return;
             }
 
-            UserEntity userEntity = userRepository.findByUsername(username);
+            String encodedUsername = personalDataEncoder.encode(username);
+
+            UserEntity userEntity = userRepository.findByUsername(encodedUsername);
             String role = userEntity.getRole().getKey(); // role : ROLE_USER, ROLE_ADMIN
 
             List<GrantedAuthority> authorities = new ArrayList<>();

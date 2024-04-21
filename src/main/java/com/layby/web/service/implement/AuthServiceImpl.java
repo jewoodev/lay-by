@@ -13,6 +13,7 @@ import com.layby.web.provider.EmailProvider;
 import com.layby.web.service.AuthService;
 import com.layby.web.util.AES256;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ import java.time.LocalDateTime;
 
 import static com.layby.domain.common.ErrorCode.*;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -52,13 +54,25 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public ResponseEntity<? super EmailCertificationResponseDto> emailCertification(EmailCertificationRequestDto dto) {
-        try {
-            String encodedUsername = dto.getUsername();
-            String username = personalDataEncoder.decode(encodedUsername);
-            String encodedEmail = dto.getEmail();
-            String email = personalDataEncoder.decode(encodedEmail);
 
-            boolean isExist = userRepository.existsByUsername(username);
+        String username = null;
+        String encodedUsername = null;
+        String email = null;
+        String encodedEmail = null;
+
+        try {
+            username = dto.getUsername();
+            encodedUsername = personalDataEncoder.encode(username);
+            email = dto.getEmail();
+            encodedEmail = personalDataEncoder.encode(email);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new InternalServerErrorException(INTERNAL_SERVER_ERROR.getMessage());
+        }
+
+        try {
+            boolean isExist = userRepository.existsByUsername(encodedUsername);
             if (!isExist) throw new MailFailedException(MAIL_FAIL.getMessage());
 
             String certificationNumber = getCertificationNumber();
@@ -96,7 +110,8 @@ public class AuthServiceImpl implements AuthService {
                     certificationEntity.getCertificationNumber().equals(certificationNumber);
             if (!isMatched) throw new CertificationFailedException(CERTIFICATION_FAIL.getMessage());
 
-            UserEntity userEntity = userRepository.findByUsername(username);
+            String encodedUsername = personalDataEncoder.encode(username);
+            UserEntity userEntity = userRepository.findByUsername(encodedUsername);
 
             userEntity.updateAfterCertification(Role.USER, LocalDateTime.now());
 
@@ -148,9 +163,9 @@ public class AuthServiceImpl implements AuthService {
         String token = null;
 
         try {
-            String encodedUsername = dto.getUsername();
-            String username = personalDataEncoder.decode(encodedUsername);
-            UserEntity userEntity = userRepository.findByUsername(username);
+            String username = dto.getUsername();
+            String encodedUsername = personalDataEncoder.encode(username);
+            UserEntity userEntity = userRepository.findByUsername(encodedUsername);
             if (userEntity == null) throw new SignInFailedException(SIGN_IN_FAIL.getMessage());
 
             String password = dto.getPassword();

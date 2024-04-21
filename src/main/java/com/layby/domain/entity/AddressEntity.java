@@ -23,7 +23,7 @@ public class AddressEntity extends BaseTimeEntity {
     private String street;
 
     @Column(name = "zipcode")
-    private int zipCode;
+    private String zipCode;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")

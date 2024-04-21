@@ -14,5 +14,5 @@ public class AddressRequestDto {
     private String street;
 
     @NotBlank
-    private int zipCode;
+    private String zipCode;
 }

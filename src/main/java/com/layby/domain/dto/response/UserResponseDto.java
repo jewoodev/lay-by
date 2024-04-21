@@ -6,12 +6,10 @@ import lombok.Setter;
 @Getter @Setter
 public class UserResponseDto {
 
-    private String password;
 
     private String phoneNumber;
 
-    public UserResponseDto(String password, String phoneNumber) {
-        this.password = password;
+    public UserResponseDto(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 }

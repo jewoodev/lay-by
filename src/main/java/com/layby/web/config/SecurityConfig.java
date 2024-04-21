@@ -42,11 +42,6 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AES256 personalDataEncoder() {
-        return new AES256();
-    }
-
-    @Bean
     protected SecurityFilterChain configure(HttpSecurity httpSecurity) throws Exception {
 
         httpSecurity

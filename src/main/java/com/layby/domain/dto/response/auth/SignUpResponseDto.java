@@ -1,7 +1,5 @@
 package com.layby.domain.dto.response.auth;
 
-import com.layby.domain.common.ResponseCode;
-import com.layby.domain.common.ResponseMessage;
 import com.layby.domain.dto.response.ResponseDto;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;

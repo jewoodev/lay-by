@@ -3,7 +3,8 @@ package com.layby.web.service.implement;
 
 import com.layby.domain.dto.request.PhoneNumberUpdateRequestDto;
 import com.layby.domain.dto.request.UserPasswordUpdateRequestDto;
-import com.layby.domain.dto.response.ResponseDto;
+import com.layby.domain.dto.response.PhoneNumberUpdateResponseDto;
+import com.layby.domain.dto.response.UserPasswordUpdateResponseDto;
 import com.layby.domain.dto.response.UserResponseDto;
 import com.layby.domain.entity.UserEntity;
 import com.layby.domain.repository.UserRepository;
@@ -11,10 +12,12 @@ import com.layby.web.exception.AES256Exception;
 import com.layby.web.service.UserService;
 import com.layby.web.util.AES256;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class UserServiceImpl implements UserService {
@@ -32,18 +35,19 @@ public class UserServiceImpl implements UserService {
     public UserResponseDto referUser(Long userId) {
         UserEntity userEntity = userRepository.findById(userId).orElse(null);
 
-        String password = null;
+        String encodedPhoneNumber = userEntity.getPhoneNumber();
         String phoneNumber = null;
 
+        log.info("encodedPhoneNumber = {}", encodedPhoneNumber);
+
         try {
-            password = personalDataEncoder.decode(userEntity.getPassword());
-            phoneNumber = personalDataEncoder.decode(userEntity.getPhoneNumber());
+            phoneNumber = personalDataEncoder.decode(encodedPhoneNumber);
         } catch (Exception e) {
             e.printStackTrace();
             throw new AES256Exception("서버에서 문제가 발생되었습니다. 서버 관리자에게 문의해주세요.");
         }
 
-        return new UserResponseDto(password, phoneNumber);
+        return new UserResponseDto(phoneNumber);
     }
 
     @Override
@@ -54,7 +58,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public ResponseEntity<ResponseDto> updatePhoneNumber(Long userId, PhoneNumberUpdateRequestDto dto) {
+    public ResponseEntity<PhoneNumberUpdateResponseDto> updatePhoneNumber(Long userId, PhoneNumberUpdateRequestDto dto) {
         UserEntity foundUserEntity = userRepository.findById(userId).orElse(null);
 
         String phoneNumber = dto.getPhoneNumber();
@@ -69,12 +73,12 @@ public class UserServiceImpl implements UserService {
 
         foundUserEntity.updatePhoneNumber(encodedPhoneNumber);
 
-        return ResponseDto.successful();
+        return PhoneNumberUpdateResponseDto.success();
     }
 
     @Override
     @Transactional
-    public ResponseEntity<ResponseDto> updatePassword(Long userId, UserPasswordUpdateRequestDto dto) {
+    public ResponseEntity<UserPasswordUpdateResponseDto> updatePassword(Long userId, UserPasswordUpdateRequestDto dto) {
         UserEntity foundUserEntity = userRepository.findById(userId).orElse(null);
 
         String password = dto.getPassword();
@@ -89,6 +93,6 @@ public class UserServiceImpl implements UserService {
 
         foundUserEntity.updatePassword(password);
 
-        return ResponseDto.successful();
+        return UserPasswordUpdateResponseDto.success();
     }
 }
