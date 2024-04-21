@@ -1,75 +1,98 @@
 package com.layby.web.service.implement;
 
-import com.layby.domain.dto.UserDto;
-import com.layby.domain.dto.request.auth.SignInRequestDto;
-import com.layby.domain.dto.request.auth.SignUpRequestDto;
-import com.layby.domain.entity.AuthorityEntity;
+
+import com.layby.domain.dto.request.PhoneNumberUpdateRequestDto;
+import com.layby.domain.dto.request.UserPasswordUpdateRequestDto;
+import com.layby.domain.dto.response.PhoneNumberUpdateResponseDto;
+import com.layby.domain.dto.response.UserPasswordUpdateResponseDto;
+import com.layby.domain.dto.response.UserResponseDto;
 import com.layby.domain.entity.UserEntity;
 import com.layby.domain.repository.UserRepository;
-import com.layby.web.exception.DuplicateMemberException;
-import com.layby.web.exception.NotFoundMemberException;
-import com.layby.web.exception.ValidationFailedException;
+import com.layby.web.exception.AES256Exception;
 import com.layby.web.service.UserService;
-import com.layby.web.util.SecurityUtil;
+import com.layby.web.util.AES256;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
-
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class UserServiceImpl implements UserService {
+
     private final UserRepository userRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final AES256 personalDataEncoder;
+
 
     @Override
-    @Transactional
-    public UserDto signup(SignUpRequestDto dto) {
-        if (userRepository.findOneWithAuthoritiesByUsername(dto.getUsername()).orElse(null) != null) {
-            throw new DuplicateMemberException("이미 가입되어 있는 유저입니다.");
+    public UserEntity findByUserId(Long userId) {
+        return userRepository.findById(userId).orElse(null);
+    }
+
+    @Override
+    public UserResponseDto referUser(Long userId) {
+        UserEntity userEntity = userRepository.findById(userId).orElse(null);
+
+        String encodedPhoneNumber = userEntity.getPhoneNumber();
+        String phoneNumber = null;
+
+        log.info("encodedPhoneNumber = {}", encodedPhoneNumber);
+
+        try {
+            phoneNumber = personalDataEncoder.decode(encodedPhoneNumber);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new AES256Exception("서버에서 문제가 발생되었습니다. 서버 관리자에게 문의해주세요.");
         }
 
-        AuthorityEntity authorityEntity = AuthorityEntity.builder()
-//                .authorityName("ROLE_USER")
-                .build();
+        return new UserResponseDto(phoneNumber);
+    }
 
-        UserEntity userEntity = UserEntity.builder()
-                .username(dto.getUsername())
-                .password(passwordEncoder.encode(dto.getPassword()))
-                .email(dto.getEmail())
-                .phoneNumber(dto.getPhoneNumber())
-                .authorities(Collections.singleton(authorityEntity))
-                .build();
+    @Override
+    public UserEntity findByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
 
-        authorityEntity.setUserEntity(userEntity);
 
-        return UserDto.userToDto(userRepository.save(userEntity));
+    @Override
+    @Transactional
+    public ResponseEntity<PhoneNumberUpdateResponseDto> updatePhoneNumber(Long userId, PhoneNumberUpdateRequestDto dto) {
+        UserEntity foundUserEntity = userRepository.findById(userId).orElse(null);
+
+        String phoneNumber = dto.getPhoneNumber();
+        String encodedPhoneNumber = null;
+
+        try {
+            encodedPhoneNumber  = personalDataEncoder.encode(phoneNumber);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new AES256Exception("서버에서 문제가 발생되었습니다. 서버 관리자에게 문의해주세요.");
+        }
+
+        foundUserEntity.updatePhoneNumber(encodedPhoneNumber);
+
+        return PhoneNumberUpdateResponseDto.success();
     }
 
     @Override
     @Transactional
-    public void signIn(SignInRequestDto dto) {
-        UserEntity user = userRepository.findByUsername(dto.getUsername());
-        if (user == null) throw new NotFoundMemberException("존재하지 않는 계정입니다.");
-        boolean isValid = passwordEncoder.matches(dto.getPassword(), user.getPassword());
-        if (!isValid) throw new ValidationFailedException("비밀번호가 일치하지 않습니다.");
-    }
+    public ResponseEntity<UserPasswordUpdateResponseDto> updatePassword(Long userId, UserPasswordUpdateRequestDto dto) {
+        UserEntity foundUserEntity = userRepository.findById(userId).orElse(null);
 
-    @Override
-    @Transactional(readOnly = true)
-    public UserDto getUserWithAuthorities(String username) {
-        return UserDto.userToDto(userRepository.findOneWithAuthoritiesByUsername(username).orElse(null));
-    }
+        String password = dto.getPassword();
+        String encodedPassword = null;
 
-    @Override
-    @Transactional(readOnly = true)
-    public UserDto getMyUserWithAuthorities() {
-        return UserDto.userToDto(
-                SecurityUtil.getCurrentUsername()
-                        .flatMap(userRepository::findOneWithAuthoritiesByUsername)
-                        .orElseThrow(() -> new NotFoundMemberException("Member not found"))
-        );
+        try {
+            encodedPassword = personalDataEncoder.encode(password);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new AES256Exception("서버에서 문제가 발생되었습니다. 서버 관리자에게 문의해주세요.");
+        }
+
+        foundUserEntity.updatePassword(password);
+
+        return UserPasswordUpdateResponseDto.success();
     }
 }

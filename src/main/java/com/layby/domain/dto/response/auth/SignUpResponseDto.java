@@ -1,7 +1,5 @@
 package com.layby.domain.dto.response.auth;
 
-import com.layby.domain.common.ResponseCode;
-import com.layby.domain.common.ResponseMessage;
 import com.layby.domain.dto.response.ResponseDto;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
@@ -16,15 +14,5 @@ public class SignUpResponseDto extends ResponseDto {
     public static ResponseEntity<SignUpResponseDto> success() {
         SignUpResponseDto responseBody = new SignUpResponseDto();
         return ResponseEntity.status(HttpStatus.OK).body(responseBody);
-    }
-
-    public static ResponseEntity<ResponseDto> duplicatedUsername() {
-        ResponseDto responseBody = new ResponseDto(ResponseCode.DUPLICATED_USERNAME, ResponseMessage.DUPLICATE_USERNAME);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(responseBody);
-    }
-
-    public static ResponseEntity<ResponseDto> certificationFail() {
-        ResponseDto responseBody = new ResponseDto(ResponseCode.CERTIFICATION_FAIL, ResponseMessage.CERTIFICATION_FAIL);
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(responseBody);
     }
 }

@@ -1,7 +1,7 @@
 package com.layby.domain.dto.request.auth;
 
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
@@ -10,18 +10,18 @@ import lombok.*;
 @NoArgsConstructor
 public class SignUpRequestDto {
 
-    @NotNull
+    @NotBlank
     @Size(min = 3, max = 50)
     private String username;
 
-    @NotNull
+    @NotBlank
     @Size(min = 3, max = 100)
     private String password;
 
-    @NotNull
+    @NotBlank
     @Email
     private String email;
 
-    @NotNull
+    @NotBlank
     private String phoneNumber;
 }

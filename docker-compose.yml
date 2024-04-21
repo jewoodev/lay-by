@@ -1,0 +1,26 @@
+version: '3'
+services:
+  mysql-primary-0:
+    image: mysql:8.0.35
+    platform: linux/x86_64
+    restart: always
+    volumes:
+      - ./db/mysql/data:/var/lib/mysql
+      - ./db/mysql/config:/etc/mysql/conf.d
+      - ./db/mysql/init:/docker-entrypoint-initdb.d
+    container_name: mysql-primary-0
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: my1234
+      TZ: Asia/Seoul
+      MYSQL_USER: jewoo
+      MYSQL_PASSWORD: 1234
+
+  redis:
+    image: redis:alpine
+    container_name: redis_boot
+    command: redis-server --port 6379
+    hostname: redis
+    ports:
+      - "6379:6379"

@@ -1,8 +1,8 @@
 package com.layby.domain.dto.request.auth;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 @Getter @Setter @Builder
@@ -10,11 +10,11 @@ import jakarta.validation.constraints.Size;
 @NoArgsConstructor
 public class SignInRequestDto {
 
-    @NotNull
+    @NotBlank
     @Size(min = 3, max = 50)
     private String username;
 
-    @NotNull
+    @NotBlank
     @Size(min = 3, max = 100)
     private String password;
 }
