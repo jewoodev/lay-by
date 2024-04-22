@@ -3,7 +3,6 @@ package com.layby.domain.entity;
 import com.layby.domain.common.DeliveryStatus;
 import jakarta.persistence.*;
 import lombok.*;
-import org.aspectj.weaver.ast.Or;
 
 @Getter
 @AllArgsConstructor
@@ -16,7 +15,7 @@ public class Delivery {
     @Column(name = "delivery_id")
     private Long deliveryId;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "address_id")
     private Address address;
 
@@ -26,7 +25,7 @@ public class Delivery {
     @OneToOne(mappedBy = "delivery", fetch = FetchType.LAZY)
     private Order order;
 
-    public void mappingOrderEntity(Order order) {
+    public void mappingOrder(Order order) {
         this.order = order;
     }
 

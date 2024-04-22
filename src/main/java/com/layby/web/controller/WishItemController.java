@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -36,9 +35,17 @@ public class WishItemController {
             @PathVariable(name = "user_id") Long userId,
             @RequestBody AddressReferResponseDto addressReferResponseDto,
             @RequestBody List<WishItemResponseDto> dtos
-            ) {
+    ) {
         Long addressId = addressReferResponseDto.getAddressId();
         return wishItemService.purchaseWishList(userId, addressId, dtos);
+    }
+
+    @PostMapping("/{user_id}/test")
+    @PreAuthorize("hasAnyRole('ROLE_USER')")
+    public ResponseEntity<ResponseDto> purchaseWishListTest(
+            @PathVariable(name = "user_id") Long userId
+    ) {
+        return wishItemService.purchaseWishListTest(userId);
     }
 
     @PatchMapping("/{wish_item_id}/increase-count")
@@ -52,6 +59,14 @@ public class WishItemController {
     @PatchMapping("/{wish_item_id}/decrease-count")
     @PreAuthorize("hasAnyRole('ROLE_USER')")
     public ResponseEntity<ResponseDto> decreaseCount(
+            @PathVariable(name = "wish_item_id") Long wishItemId
+    ) {
+        return wishItemService.decreaseCount(wishItemId);
+    }
+
+    @DeleteMapping("/{wish_item_id}/")
+    @PreAuthorize("hasAnyRole('ROLE_USER')")
+    public ResponseEntity<ResponseDto> delete(
             @PathVariable(name = "wish_item_id") Long wishItemId
     ) {
         return wishItemService.decreaseCount(wishItemId);

@@ -1,5 +1,6 @@
 package com.layby.web.service.implement;
 
+import com.layby.domain.common.ErrorCode;
 import com.layby.domain.dto.request.AddressRequestDto;
 import com.layby.domain.dto.response.AddressListReferResponseDto;
 import com.layby.domain.dto.response.ResponseDto;
@@ -36,7 +37,7 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public Address findByAddressId(Long addressId) {
-        return addressRepository.findById(addressId).orElse(null);
+        return addressRepository.findByAddressId(addressId);
     }
 
     @Override
@@ -66,17 +67,30 @@ public class AddressServiceImpl implements AddressService {
             throw new InternalServerErrorException(INTERNAL_SERVER_ERROR.getMessage());
         }
 
-        log.info("dto's city = {}", dto.getCity());
-        log.info("dto's street = {}", dto.getStreet());
-        log.info("dto's zipCode = {}", dto.getZipCode());
+        String city = dto.getCity();
+        String street = dto.getStreet();
+        String zipCode = dto.getZipCode();
+        String encodedCity = null;
+        String encodedStreet = null;
+        String encodedZipCode = null;
+
+        try {
+            encodedCity = personalDataEncoder.encode(city);
+            encodedStreet = personalDataEncoder.encode(street);
+            encodedZipCode = personalDataEncoder.encode(zipCode);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new InternalServerErrorException(INTERNAL_SERVER_ERROR.getMessage());
+        }
 
         User user = userService.findByUsername(encodedUsername);
         Address address = Address.builder()
-                .city(dto.getCity())
-                .street(dto.getStreet())
-                .zipCode(dto.getZipCode())
-                .user(user)
-                .build();
+                    .city(encodedCity)
+                    .street(encodedStreet)
+                    .zipCode(encodedZipCode)
+                    .user(user)
+                    .build();
+
         addressRepository.save(address);
 
         return ResponseDto.success();

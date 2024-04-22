@@ -2,7 +2,7 @@ package com.layby.domain.entity;
 
 import com.layby.domain.common.DeliveryStatus;
 import com.layby.domain.common.OrderStatus;
-import com.layby.domain.dto.response.OrderResponseDto;
+import com.layby.domain.dto.response.OrderStatusResponseDto;
 import com.layby.web.exception.DeliveryCancelFailedException;
 import jakarta.persistence.*;
 import lombok.*;
@@ -35,7 +35,7 @@ public class Order extends BaseTimeEntity {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> orderItems = new ArrayList<>();
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "delivery_id")
     private Delivery delivery;
 
@@ -50,16 +50,16 @@ public class Order extends BaseTimeEntity {
         orderItem.mappingOrder(this);
     }
 
-    public void mappingDeliveryEntity(Delivery delivery) {
+    public void mappingDelivery(Delivery delivery) {
         this.delivery = delivery;
-        delivery.mappingOrderEntity(this);
+        delivery.mappingOrder(this);
     }
 
     //== 생성 메서드 ==//
     public static Order createOrder(
             User user, Delivery delivery, List<OrderItem> orderItems
     ) {
-        Order order = new Order(null, OrderStatus.ORDER, user, null, delivery);
+        Order order = new Order(null, OrderStatus.ORDER, user, new ArrayList<>(), delivery);
 
         for (OrderItem orderItem : orderItems) {
             order.addOrderItem(orderItem);
@@ -69,13 +69,13 @@ public class Order extends BaseTimeEntity {
     }
 
     //== 변환 메서드 ==//
-    public static OrderResponseDto convertToDto(Order order) {
-        OrderResponseDto orderResponseDto = OrderResponseDto.builder()
+    public static OrderStatusResponseDto convertToDto(Order order) {
+        OrderStatusResponseDto orderStatusResponseDto = OrderStatusResponseDto.builder()
                 .orderStatus(order.getOrderStatus().getDescription())
                 .deliveryStatus(order.getDelivery().getDeliveryStatus().getDescription())
                 .build();
 
-        return orderResponseDto;
+        return orderStatusResponseDto;
     }
 
     //== 비즈니스 로직 ==//

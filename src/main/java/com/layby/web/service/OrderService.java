@@ -1,6 +1,6 @@
 package com.layby.web.service;
 
-import com.layby.domain.dto.response.OrderResponseDto;
+import com.layby.domain.dto.response.OrderStatusResponseDto;
 import com.layby.domain.entity.Order;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -11,5 +11,5 @@ public interface OrderService {
 
     void save(Order order);
 
-    ResponseEntity<List<OrderResponseDto>> referOrdersStatus(Authentication authentication);
+    ResponseEntity<List<OrderStatusResponseDto>> referOrdersStatus(Authentication authentication);
 }

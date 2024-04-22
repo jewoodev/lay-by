@@ -29,12 +29,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findByUserId(Long userId) {
-        return userRepository.findById(userId).orElse(null);
+        return userRepository.findByUserId(userId);
     }
 
     @Override
     public UserResponseDto referUser(Long userId) {
-        User user = userRepository.findById(userId).orElse(null);
+        User user = userRepository.findByUserId(userId);
 
         String encodedPhoneNumber = user.getPhoneNumber();
         String phoneNumber = null;
@@ -60,7 +60,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public ResponseEntity<ResponseDto> updatePhoneNumber(Long userId, PhoneNumberUpdateRequestDto dto) {
-        User foundUser = userRepository.findById(userId).orElse(null);
+        User foundUser = userRepository.findByUserId(userId);
 
         String phoneNumber = dto.getPhoneNumber();
         String encodedPhoneNumber = null;
@@ -80,7 +80,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public ResponseEntity<ResponseDto> updatePassword(Long userId, UserPasswordUpdateRequestDto dto) {
-        User foundUser = userRepository.findById(userId).orElse(null);
+        User foundUser = userRepository.findByUserId(userId);
 
         String password = dto.getPassword();
         String encodedPassword = null;

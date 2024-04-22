@@ -6,7 +6,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface WishItemRepository extends JpaRepository<WishItem, Long> {
+public interface WishItemRepository extends JpaRepository<WishItem, Long>, WishItemRepositoryCustom {
+
+    WishItem findByWishItemId(Long wishItemId);
 
     List<WishItem> findAllByUser(User user);
 }

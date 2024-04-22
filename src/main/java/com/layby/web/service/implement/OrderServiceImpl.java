@@ -1,7 +1,7 @@
 package com.layby.web.service.implement;
 
 import com.layby.domain.common.ErrorCode;
-import com.layby.domain.dto.response.OrderResponseDto;
+import com.layby.domain.dto.response.OrderStatusResponseDto;
 import com.layby.domain.entity.Order;
 import com.layby.domain.entity.User;
 import com.layby.domain.repository.OrderRepository;
@@ -31,7 +31,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public ResponseEntity<List<OrderResponseDto>> referOrdersStatus(Authentication authentication) {
+    public ResponseEntity<List<OrderStatusResponseDto>> referOrdersStatus(Authentication authentication) {
         String username = authentication.getPrincipal().toString();
         String encodedUsername = null;
 
@@ -45,12 +45,12 @@ public class OrderServiceImpl implements OrderService {
         // 현재 인증되어진 유저의 전체 주문 목록을 조회해서
         User user = userService.findByUsername(username);
         List<Order> allByUser = orderRepository.findAllByUser(user);
-        List<OrderResponseDto> responseBody = null;
+        List<OrderStatusResponseDto> responseBody = null;
 
         // Dto로 변환해서
         for (Order order : allByUser) {
-            OrderResponseDto orderResponseDto = Order.convertToDto(order);
-            responseBody.add(orderResponseDto);
+            OrderStatusResponseDto orderStatusResponseDto = Order.convertToDto(order);
+            responseBody.add(orderStatusResponseDto);
         }
 
         // 반환한다.

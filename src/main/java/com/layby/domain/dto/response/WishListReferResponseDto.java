@@ -19,7 +19,7 @@ public class WishListReferResponseDto {
         for (WishItem wishItem : wishItemEntities) {
             this.wishItemResponseDtos
                     .add(
-              WishItemResponseDto.fromOrderItemEntity(wishItem)
+              WishItemResponseDto.fromWishItem(wishItem)
             );
 
             totalPrice += wishItem.getTotalPrice();

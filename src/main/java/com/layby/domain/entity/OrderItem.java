@@ -45,7 +45,6 @@ public class OrderItem {
                 .count(count)
                 .build();
 
-        item.removeStock(count);
         return orderItem;
     }
 

@@ -1,6 +1,6 @@
 package com.layby.web.controller;
 
-import com.layby.domain.dto.response.OrderResponseDto;
+import com.layby.domain.dto.response.OrderStatusResponseDto;
 import com.layby.web.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +23,7 @@ public class OrderController {
 
     @GetMapping("/all")
     @PreAuthorize("hasAnyRole('ROLE_USER')")
-    public ResponseEntity<List<OrderResponseDto>> referOrdersStatus(Authentication authentication) {
+    public ResponseEntity<List<OrderStatusResponseDto>> referOrdersStatus(Authentication authentication) {
 
         return orderService.referOrdersStatus(authentication);
     }

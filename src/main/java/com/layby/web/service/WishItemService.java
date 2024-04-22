@@ -15,7 +15,7 @@ public interface WishItemService {
 
     ResponseEntity<ResponseDto> save(WishItem wishItem);
 
-    WishItem findById(Long wishItemId);
+    WishItem findByWishItemId(Long wishItemId);
 
     List<WishItem> findAllByUser(User user);
 
@@ -31,4 +31,6 @@ public interface WishItemService {
 
     ResponseEntity<ResponseDto> purchaseWishList(
             Long userId, Long addressId, List<WishItemResponseDto> dtos);
+
+    ResponseEntity<ResponseDto> purchaseWishListTest(Long userId);
 }
