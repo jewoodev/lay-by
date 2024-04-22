@@ -22,7 +22,9 @@ public enum ErrorCode {
 
     NOT_ENOUGH_STOCK("409", "All stock has been sold out."),
 
-    DELIVERY_ALEADY_START("409", "Cancellation is only possible before delivery begins.");
+    DELIVERY_ALEADY_START("409", "Cancellation is only possible before delivery begins."),
+
+    REFUND_IS_NOT_POSSIBLE("409", "Refunds are not possible after 2 days after delivery.");
 
 
     private final String code;

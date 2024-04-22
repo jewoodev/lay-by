@@ -36,7 +36,8 @@ public class RestResponseExceptionHandler extends ResponseEntityExceptionHandler
     }
 
     @ResponseStatus(CONFLICT)
-    @ExceptionHandler(value = { NotEnoughStockException.class, DeliveryCancelFailedException.class })
+    @ExceptionHandler(value = { NotEnoughStockException.class, DeliveryCancelFailedException.class,
+            RefundFailedException.class, NotEnoughStockException.class, DeliveryCancelFailedException.class })
     @ResponseBody
     protected ErrorDto conflict(RuntimeException ex, WebRequest request) {
         return new ErrorDto(CONFLICT.value(), ex.getMessage());

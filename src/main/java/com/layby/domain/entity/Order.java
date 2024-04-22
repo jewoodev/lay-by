@@ -1,14 +1,15 @@
 package com.layby.domain.entity;
 
 import com.layby.domain.common.DeliveryStatus;
+import com.layby.domain.common.ErrorCode;
 import com.layby.domain.common.OrderStatus;
 import com.layby.domain.dto.response.OrderStatusResponseDto;
 import com.layby.web.exception.DeliveryCancelFailedException;
+import com.layby.web.exception.RefundFailedException;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,6 +40,8 @@ public class Order extends BaseTimeEntity {
     @JoinColumn(name = "delivery_id")
     private Delivery delivery;
 
+    private LocalDate refundRequestDate;
+
     //== 연관 관계 메서드 ==//
     public void mappingUser(User user) {
         this.user = user;
@@ -59,7 +62,12 @@ public class Order extends BaseTimeEntity {
     public static Order createOrder(
             User user, Delivery delivery, List<OrderItem> orderItems
     ) {
-        Order order = new Order(null, OrderStatus.ORDER, user, new ArrayList<>(), delivery);
+        Order order = Order.builder()
+                .orderStatus(OrderStatus.ORDER)
+                .user(user)
+                .orderItems(new ArrayList<>())
+                .delivery(delivery)
+                .build();
 
         for (OrderItem orderItem : orderItems) {
             order.addOrderItem(orderItem);
@@ -69,10 +77,13 @@ public class Order extends BaseTimeEntity {
     }
 
     //== 변환 메서드 ==//
-    public static OrderStatusResponseDto convertToDto(Order order) {
+    public static OrderStatusResponseDto convertToStatusDto(Order order) {
+
+        // 배송 정보는 checkStatus() 로 업데이트해서 response
         OrderStatusResponseDto orderStatusResponseDto = OrderStatusResponseDto.builder()
                 .orderStatus(order.getOrderStatus().getDescription())
-                .deliveryStatus(order.getDelivery().getDeliveryStatus().getDescription())
+                .deliveryStatus(order.getDelivery().checkStatus().getDescription())
+                .totalPrice(order.getTotalPrice())
                 .build();
 
         return orderStatusResponseDto;
@@ -81,7 +92,7 @@ public class Order extends BaseTimeEntity {
     //== 비즈니스 로직 ==//
     /** 주문 취소 **/
     public void cancel() {
-        DeliveryStatus deliveryStatus = delivery.getDeliveryStatus();
+        DeliveryStatus deliveryStatus = delivery.checkStatus();
         if (deliveryStatus == DeliveryStatus.PROCESS ||
                 deliveryStatus == DeliveryStatus.COMPLETE) {
             throw new DeliveryCancelFailedException(DELIVERY_ALEADY_START.getMessage());
@@ -93,15 +104,22 @@ public class Order extends BaseTimeEntity {
         }
     }
 
-    /** 배송 상태 업데이트 **/
-    public void updateOrderStatus() {
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime orderedDate = getCreatedDate();
-
-        long passDays = ChronoUnit.DAYS.between(now, orderedDate);
-        if (passDays == 1) this.delivery.updateStatus(DeliveryStatus.PROCESS);
-        else if (passDays > 1) this.delivery.updateStatus(DeliveryStatus.COMPLETE);
+    /** 환불 **/
+    public void refund() {
+        long pastDay = delivery.checkPastDay();
+        if (pastDay == 3) {
+            this.orderStatus = OrderStatus.REFUND_PROCESS;
+            this.refundRequestDate = LocalDate.now();
+        }
+        else throw new RefundFailedException(REFUND_IS_NOT_POSSIBLE.getMessage());
     }
+
+    /** 상태 업데이트 **/
+    public void updateStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
+    }
+
+
 
     //== 조회 로직 ==//
     /** 전체 주문 가격 조회 **/
