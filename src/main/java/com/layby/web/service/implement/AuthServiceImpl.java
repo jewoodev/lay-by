@@ -2,6 +2,7 @@ package com.layby.web.service.implement;
 
 import com.layby.domain.common.Role;
 import com.layby.domain.dto.request.auth.*;
+import com.layby.domain.dto.response.ResponseDto;
 import com.layby.domain.dto.response.auth.*;
 import com.layby.domain.entity.MailCertification;
 import com.layby.domain.entity.User;
@@ -14,6 +15,7 @@ import com.layby.web.service.AuthService;
 import com.layby.web.util.AES256;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -38,7 +40,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     @Transactional(readOnly = true)
-    public ResponseEntity<? super UsernameCheckReponseDto> usernameCheck(UsernameCheckRequestDto dto) {
+    public ResponseEntity<ResponseDto> usernameCheck(UsernameCheckRequestDto dto) {
 
         try {
             String username = dto.getUsername();
@@ -50,12 +52,12 @@ public class AuthServiceImpl implements AuthService {
             throw new DatabaseErrorException(DATABASE_ERROR.getMessage());
         }
 
-        return UsernameCheckReponseDto.success();
+        return ResponseDto.success();
     }
 
     @Override
     @Transactional
-    public ResponseEntity<? super EmailCertificationResponseDto> emailCertification(EmailCertificationRequestDto dto) {
+    public ResponseEntity<ResponseDto> emailCertification(EmailCertificationRequestDto dto) {
 
         String username = null;
         String encodedUsername = null;
@@ -93,12 +95,12 @@ public class AuthServiceImpl implements AuthService {
             throw new DatabaseErrorException(DATABASE_ERROR.getMessage());
         }
 
-        return EmailCertificationResponseDto.success();
+        return ResponseDto.success();
     }
 
     @Override
     @Transactional
-    public ResponseEntity<? super CheckCertificationResponseDto> checkCertification(CheckCertificationRequestDto dto) {
+    public ResponseEntity<ResponseDto> checkCertification(CheckCertificationRequestDto dto) {
 
         String username = dto.getUsername();
         String email = dto.getEmail();
@@ -134,12 +136,12 @@ public class AuthServiceImpl implements AuthService {
             throw new DatabaseErrorException(DATABASE_ERROR.getMessage());
         }
 
-        return CheckCertificationResponseDto.success();
+        return ResponseDto.success();
     }
 
     @Override
     @Transactional
-    public ResponseEntity<? super SignUpResponseDto> signUp(SignUpRequestDto dto) {
+    public ResponseEntity<ResponseDto> signUp(SignUpRequestDto dto) {
 
         try {
             String username = dto.getUsername();
@@ -167,12 +169,12 @@ public class AuthServiceImpl implements AuthService {
             e.printStackTrace();
             throw new InternalServerErrorException(INTERNAL_SERVER_ERROR.getMessage());
         }
-        return SignUpResponseDto.success();
+        return ResponseDto.success();
     }
 
     @Override
     @Transactional
-    public ResponseEntity<? super SignInResponseDto> signIn(SignInRequestDto dto) {
+    public ResponseEntity<SignInResponseDto> signIn(SignInRequestDto dto) {
 
         String token = null;
 
@@ -194,7 +196,9 @@ public class AuthServiceImpl implements AuthService {
             throw new InternalServerErrorException(INTERNAL_SERVER_ERROR.getMessage());
         }
 
-        return SignInResponseDto.success(token);
+        SignInResponseDto signInResponseDto = new SignInResponseDto(token);
+
+        return ResponseEntity.status(HttpStatus.OK).body(signInResponseDto);
     }
 
     private String getCertificationNumber() {

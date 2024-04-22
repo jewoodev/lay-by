@@ -1,6 +1,7 @@
 package com.layby.web.controller;
 
 import com.layby.domain.dto.request.auth.*;
+import com.layby.domain.dto.response.ResponseDto;
 import com.layby.domain.dto.response.auth.*;
 
 import com.layby.web.service.AuthService;
@@ -20,42 +21,38 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/usename-check")
-    public ResponseEntity<? super UsernameCheckReponseDto> usernameCheck(
+    public ResponseEntity<ResponseDto> usernameCheck(
             @RequestBody @Valid UsernameCheckRequestDto requestBody
             ) {
-        ResponseEntity<? super UsernameCheckReponseDto> response = authService.usernameCheck(requestBody);
+        ResponseEntity<ResponseDto> response = authService.usernameCheck(requestBody);
         return response;
     }
 
     @PostMapping("/email-certification")
-    public ResponseEntity<? super EmailCertificationResponseDto> emailCertification(
+    public ResponseEntity<ResponseDto> emailCertification(
             @RequestBody @Valid EmailCertificationRequestDto requestBody
             ) {
-        ResponseEntity<? super EmailCertificationResponseDto> response = authService.emailCertification(requestBody);
-        return response;
+        return authService.emailCertification(requestBody);
     }
 
     @PostMapping("/check-certification")
-    public ResponseEntity<? super CheckCertificationResponseDto> checkCertification(
+    public ResponseEntity<ResponseDto> checkCertification(
             @RequestBody @Valid CheckCertificationRequestDto requestBody
     ) {
-        ResponseEntity<? super CheckCertificationResponseDto> response = authService.checkCertification(requestBody);
-        return response;
+        return authService.checkCertification(requestBody);
     }
 
     @PostMapping("/sign-up")
-    public ResponseEntity<? super SignUpResponseDto> signUp(
+    public ResponseEntity<ResponseDto> signUp(
             @RequestBody @Valid SignUpRequestDto requestBody
     ) {
-        ResponseEntity<? super SignUpResponseDto> response = authService.signUp(requestBody);
-        return response;
+        return authService.signUp(requestBody);
     }
 
     @PostMapping("/sign-in")
-    public ResponseEntity<? super SignInResponseDto> signUp(
+    public ResponseEntity<SignInResponseDto> signIn(
             @RequestBody @Valid SignInRequestDto requestBody
     ) {
-        ResponseEntity<? super SignInResponseDto> response = authService.signIn(requestBody);
-        return response;
+        return authService.signIn(requestBody);
     }
 }

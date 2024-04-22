@@ -1,20 +1,11 @@
 package com.layby.web.controller;
 
-import com.layby.domain.common.ErrorCode;
 import com.layby.domain.dto.request.WishItemSaveRequestDto;
 import com.layby.domain.dto.response.ItemListResponseDto;
 import com.layby.domain.dto.response.ItemResponseDto;
-import com.layby.domain.dto.response.WishlistRegisterResponseDto;
-import com.layby.domain.entity.Item;
-import com.layby.domain.entity.User;
-import com.layby.domain.entity.WishItem;
-import com.layby.domain.entity.WishList;
-import com.layby.web.exception.InternalServerErrorException;
+import com.layby.domain.dto.response.ResponseDto;
 import com.layby.web.service.ItemService;
-import com.layby.web.service.UserService;
 import com.layby.web.service.WishItemService;
-import com.layby.web.service.WishListService;
-import com.layby.web.util.AES256;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -32,10 +23,7 @@ import java.util.List;
 public class ItemController {
 
     private final ItemService itemService;
-    private final UserService userService;
-    private final WishListService wishlistService;
     private final WishItemService wishItemService;
-    private final AES256 personalDataEncoder;
 
     @GetMapping("/all")
     @PreAuthorize("hasAnyRole('ROLE_USER')")
@@ -52,13 +40,11 @@ public class ItemController {
 
     @PostMapping("/{item_id}")
     @PreAuthorize("hasAnyRole('ROLE_USER')")
-    public ResponseEntity<WishlistRegisterResponseDto> registerToWishlist(
+    public ResponseEntity<ResponseDto> registerToWishlist(
             @PathVariable(name = "item_id") Long itemId,
             Authentication authentication,
             @RequestBody @Valid WishItemSaveRequestDto dto
     ) {
-        wishlistService.register(itemId, authentication, dto);
-
-        return WishlistRegisterResponseDto.success();
+        return wishItemService.register(itemId, authentication, dto);
     }
 }

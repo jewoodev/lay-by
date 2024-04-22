@@ -6,18 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 @Getter
-public class SignInResponseDto extends ResponseDto {
+@AllArgsConstructor
+public class SignInResponseDto {
 
     private String token;
-
-    private SignInResponseDto(String token) {
-        super();
-        this.token = token;
-    }
-
-    public static ResponseEntity<SignInResponseDto> success(String token) {
-        SignInResponseDto responseBody = new SignInResponseDto(token);
-        return ResponseEntity.status(HttpStatus.OK).body(responseBody);
-    }
-
 }

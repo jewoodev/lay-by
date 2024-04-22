@@ -1,7 +1,8 @@
 package com.layby.web.service.implement;
 
 import com.layby.domain.dto.request.AddressRequestDto;
-import com.layby.domain.dto.response.AddressUpdateResponseDto;
+import com.layby.domain.dto.response.AddressListReferResponseDto;
+import com.layby.domain.dto.response.ResponseDto;
 import com.layby.domain.entity.Address;
 import com.layby.domain.entity.User;
 import com.layby.domain.repository.AddressRepository;
@@ -11,9 +12,15 @@ import com.layby.web.service.UserService;
 import com.layby.web.util.AES256;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
+import java.util.List;
 
 import static com.layby.domain.common.ErrorCode.*;
 
@@ -33,17 +40,22 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
-    @Transactional
-    public ResponseEntity<AddressUpdateResponseDto> updateAddress(Long addressId, AddressRequestDto dto) {
-        Address foundAddress = addressRepository.findById(addressId).orElse(null);
-        foundAddress.updateAddressEntity(dto);
-
-        return AddressUpdateResponseDto.success();
+    public List<Address> findAllByUser(User user) {
+        return addressRepository.findAllByUser(user);
     }
 
     @Override
     @Transactional
-    public ResponseEntity<AddressUpdateResponseDto> addAddress(String username, AddressRequestDto dto) {
+    public ResponseEntity<ResponseDto> updateAddress(Long addressId, AddressRequestDto dto) {
+        Address foundAddress = addressRepository.findById(addressId).orElse(null);
+        foundAddress.updateAddressEntity(dto);
+
+        return ResponseDto.success();
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<ResponseDto> addAddress(String username, AddressRequestDto dto) {
 
         String encodedUsername = null;
 
@@ -67,6 +79,16 @@ public class AddressServiceImpl implements AddressService {
                 .build();
         addressRepository.save(address);
 
-        return AddressUpdateResponseDto.success();
+        return ResponseDto.success();
+    }
+
+    @Override
+    public ResponseEntity<AddressListReferResponseDto> referAddressListByUserId(Long userId) {
+
+        User user = userService.findByUserId(userId);
+        List<Address> addressList = findAllByUser(user);
+        AddressListReferResponseDto addressListReferResponseDto = new AddressListReferResponseDto(addressList);
+
+        return ResponseEntity.status(HttpStatus.OK).body(addressListReferResponseDto);
     }
 }

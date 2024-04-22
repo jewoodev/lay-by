@@ -3,7 +3,7 @@ package com.layby.web.service.implement;
 import com.layby.domain.dto.request.ItemSaveRequestDto;
 import com.layby.domain.dto.response.ItemListResponseDto;
 import com.layby.domain.dto.response.ItemResponseDto;
-import com.layby.domain.dto.response.ItemSaveResponseDto;
+import com.layby.domain.dto.response.ResponseDto;
 import com.layby.domain.entity.Item;
 import com.layby.domain.repository.ItemRepository;
 import com.layby.web.service.ItemService;
@@ -32,11 +32,17 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    public Item findByItemName(String itemName) {
+        return itemRepository.findByItemName(itemName);
+    }
+
+    @Override
     @Transactional
-    public ResponseEntity<? super ItemSaveResponseDto> saveItem(ItemSaveRequestDto dto) {
+    public ResponseEntity<ResponseDto> saveItem(ItemSaveRequestDto dto) {
         Item item = new Item(dto);
         itemRepository.save(item);
-        return ItemSaveResponseDto.success();
+
+        return ResponseDto.success();
     }
 
     @Override

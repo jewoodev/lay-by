@@ -1,8 +1,8 @@
 package com.layby.web.controller;
 
 import com.layby.domain.dto.request.AddressRequestDto;
-import com.layby.domain.dto.response.AddressUpdateResponseDto;
-import com.layby.web.jwt.JwtProvider;
+import com.layby.domain.dto.response.AddressListReferResponseDto;
+import com.layby.domain.dto.response.ResponseDto;
 import com.layby.web.service.AddressService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -19,11 +19,18 @@ import org.springframework.web.bind.annotation.*;
 public class AddressController {
 
     private final AddressService addressService;
-    private final JwtProvider jwtProvider;
+
+    @GetMapping("/{user_id}")
+    @PreAuthorize("hasAnyRole('ROLE_USER')")
+    public ResponseEntity<AddressListReferResponseDto> referAddressList(
+            @PathVariable(name = "user_id") Long userId
+    ) {
+        return addressService.referAddressListByUserId(userId);
+    }
 
     @PutMapping("/{address_id}/update")
     @PreAuthorize("hasAnyRole('ROLE_USER')")
-    public ResponseEntity<? super AddressUpdateResponseDto> updateAddress(
+    public ResponseEntity<ResponseDto> updateAddress(
             @PathVariable(name = "address_id") Long addressId,
             @RequestBody @Valid AddressRequestDto dto
     ) {
@@ -32,12 +39,11 @@ public class AddressController {
 
     @PostMapping("/add")
     @PreAuthorize("hasAnyRole('ROLE_USER')")
-    public ResponseEntity<? super AddressUpdateResponseDto> addAddress(
+    public ResponseEntity<ResponseDto> addAddress(
             Authentication authentication,
             @RequestBody @Valid AddressRequestDto dto
     ) {
         String username = authentication.getPrincipal().toString();
-        log.info("username = {}", username);
         return addressService.addAddress(username, dto);
     }
 }

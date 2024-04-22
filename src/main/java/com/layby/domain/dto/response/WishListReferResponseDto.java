@@ -12,6 +12,8 @@ public class WishListReferResponseDto {
 
     private List<WishItemResponseDto> wishItemResponseDtos = new ArrayList<>();
 
+    private int totalPrice = 0;
+
     public WishListReferResponseDto(List<WishItem> wishItemEntities) {
 
         for (WishItem wishItem : wishItemEntities) {
@@ -19,6 +21,8 @@ public class WishListReferResponseDto {
                     .add(
               WishItemResponseDto.fromOrderItemEntity(wishItem)
             );
+
+            totalPrice += wishItem.getTotalPrice();
         }
     }
 }

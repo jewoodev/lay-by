@@ -2,8 +2,7 @@ package com.layby.web.controller;
 
 import com.layby.domain.dto.request.PhoneNumberUpdateRequestDto;
 import com.layby.domain.dto.request.UserPasswordUpdateRequestDto;
-import com.layby.domain.dto.response.PhoneNumberUpdateResponseDto;
-import com.layby.domain.dto.response.UserPasswordUpdateResponseDto;
+import com.layby.domain.dto.response.ResponseDto;
 import com.layby.domain.dto.response.UserResponseDto;
 import com.layby.web.service.UserService;
 import jakarta.validation.Valid;
@@ -28,7 +27,7 @@ public class UserController {
 
     @PatchMapping("/{user_id}/update-phone-number")
     @PreAuthorize("hasAnyRole('ROLE_USER')")
-    public ResponseEntity<? super PhoneNumberUpdateResponseDto> updatePhoneNumber(
+    public ResponseEntity<ResponseDto> updatePhoneNumber(
             @PathVariable(name = "user_id") Long userId,
             @RequestBody @Valid PhoneNumberUpdateRequestDto dto
     ) {
@@ -37,7 +36,7 @@ public class UserController {
 
     @PatchMapping("/{user_id}/update-password")
     @PreAuthorize("hasAnyRole('ROLE_USER')")
-    public ResponseEntity<? super UserPasswordUpdateResponseDto> updatePassword(
+    public ResponseEntity<ResponseDto> updatePassword(
             @PathVariable(name = "user_id") Long userId,
             @RequestBody @Valid UserPasswordUpdateRequestDto dto
     ) {

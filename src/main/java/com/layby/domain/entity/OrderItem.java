@@ -28,17 +28,20 @@ public class OrderItem {
     @JoinColumn(name = "order_id")
     private Order order;
 
-    public void mappingOrderEntity(Order order) {
+    public void mappingOrder(Order order) {
         this.order = order;
     }
 
     //== 생성 메서드 ==//
-    public static OrderItem createOrderItemEntity(
-            Item item, int orderPrice, int count
+    public static OrderItem convertFromWishItem(
+            WishItem wishItem
     ) {
+        Item item = wishItem.getItem();
+        int count = wishItem.getCount();
+
         OrderItem orderItem = OrderItem.builder()
                 .item(item)
-                .orderPrice(orderPrice)
+                .orderPrice(wishItem.getPrice())
                 .count(count)
                 .build();
 

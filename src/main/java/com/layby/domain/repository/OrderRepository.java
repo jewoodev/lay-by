@@ -1,7 +1,12 @@
 package com.layby.domain.repository;
 
+import com.layby.domain.entity.Order;
 import com.layby.domain.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface OrderRepository extends JpaRepository<User, Long> {
+import java.util.List;
+
+public interface OrderRepository extends JpaRepository<Order, Long> {
+
+    List<Order> findAllByUser(User user);
 }

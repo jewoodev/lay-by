@@ -1,7 +1,9 @@
 package com.layby.domain.common;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+@Getter
 @RequiredArgsConstructor
 public enum DeliveryStatus {
     PREPARE("상품 준비중"),

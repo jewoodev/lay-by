@@ -1,10 +1,10 @@
 package com.layby.web.service.implement;
 
 
+import com.layby.domain.common.ErrorCode;
 import com.layby.domain.dto.request.PhoneNumberUpdateRequestDto;
 import com.layby.domain.dto.request.UserPasswordUpdateRequestDto;
-import com.layby.domain.dto.response.PhoneNumberUpdateResponseDto;
-import com.layby.domain.dto.response.UserPasswordUpdateResponseDto;
+import com.layby.domain.dto.response.ResponseDto;
 import com.layby.domain.dto.response.UserResponseDto;
 import com.layby.domain.entity.User;
 import com.layby.domain.repository.UserRepository;
@@ -45,7 +45,7 @@ public class UserServiceImpl implements UserService {
             phoneNumber = personalDataEncoder.decode(encodedPhoneNumber);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new AES256Exception("서버에서 문제가 발생되었습니다. 서버 관리자에게 문의해주세요.");
+            throw new AES256Exception(ErrorCode.INTERNAL_SERVER_ERROR.getMessage());
         }
 
         return new UserResponseDto(phoneNumber);
@@ -59,7 +59,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public ResponseEntity<PhoneNumberUpdateResponseDto> updatePhoneNumber(Long userId, PhoneNumberUpdateRequestDto dto) {
+    public ResponseEntity<ResponseDto> updatePhoneNumber(Long userId, PhoneNumberUpdateRequestDto dto) {
         User foundUser = userRepository.findById(userId).orElse(null);
 
         String phoneNumber = dto.getPhoneNumber();
@@ -69,17 +69,17 @@ public class UserServiceImpl implements UserService {
             encodedPhoneNumber  = personalDataEncoder.encode(phoneNumber);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new AES256Exception("서버에서 문제가 발생되었습니다. 서버 관리자에게 문의해주세요.");
+            throw new AES256Exception(ErrorCode.INTERNAL_SERVER_ERROR.getMessage());
         }
 
         foundUser.updatePhoneNumber(encodedPhoneNumber);
 
-        return PhoneNumberUpdateResponseDto.success();
+        return ResponseDto.success();
     }
 
     @Override
     @Transactional
-    public ResponseEntity<UserPasswordUpdateResponseDto> updatePassword(Long userId, UserPasswordUpdateRequestDto dto) {
+    public ResponseEntity<ResponseDto> updatePassword(Long userId, UserPasswordUpdateRequestDto dto) {
         User foundUser = userRepository.findById(userId).orElse(null);
 
         String password = dto.getPassword();
@@ -89,11 +89,11 @@ public class UserServiceImpl implements UserService {
             encodedPassword = personalDataEncoder.encode(password);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new AES256Exception("서버에서 문제가 발생되었습니다. 서버 관리자에게 문의해주세요.");
+            throw new AES256Exception(ErrorCode.INTERNAL_SERVER_ERROR.getMessage());
         }
 
         foundUser.updatePassword(encodedPassword);
 
-        return UserPasswordUpdateResponseDto.success();
+        return ResponseDto.success();
     }
 }
