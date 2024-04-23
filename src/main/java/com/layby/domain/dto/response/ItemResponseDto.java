@@ -15,6 +15,8 @@ public class ItemResponseDto {
 
     private String details;
 
+    //== 생성자 ==//
+    /** Item 엔티티로 ItemResponseDto를 만드는 생성자 **/
     public ItemResponseDto(Item item) {
         this.itemName = item.getItemName();
         this.price = item.getPrice();

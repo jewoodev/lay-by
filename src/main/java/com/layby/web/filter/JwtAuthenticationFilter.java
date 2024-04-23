@@ -1,5 +1,6 @@
 package com.layby.web.filter;
 
+import com.layby.domain.common.RedisDao;
 import com.layby.domain.entity.User;
 import com.layby.domain.repository.UserRepository;
 import com.layby.web.jwt.JwtProvider;
@@ -32,6 +33,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final UserRepository userRepository;
     private final AES256 personalDataEncoder;
 
+    private final RedisDao redisDao;
+
     @Override
     protected void doFilterInternal(
             HttpServletRequest request, HttpServletResponse response, FilterChain filterChain
@@ -51,20 +54,25 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             }
 
             String encodedUsername = personalDataEncoder.encode(username);
+            String key = "JWT_TOKEN:" + encodedUsername;
+            String storedToken = redisDao.getValue(key);
 
-            User user = userRepository.findByUsername(encodedUsername);
-            String role = user.getRole().getKey(); // role : ROLE_USER, ROLE_ADMIN
+            // 로그인 여부 체크
+            if (redisDao.hasKey(key) && storedToken.equals(token)) {
+                User user = userRepository.findByUsername(encodedUsername);
+                String role = user.getRole().getKey(); // role : ROLE_USER, ROLE_ADMIN
 
-            List<GrantedAuthority> authorities = new ArrayList<>();
-            authorities.add(new SimpleGrantedAuthority(role));
+                List<GrantedAuthority> authorities = new ArrayList<>();
+                authorities.add(new SimpleGrantedAuthority(role));
 
-            SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
-            AbstractAuthenticationToken authenticationToken =
-                    new UsernamePasswordAuthenticationToken(username, null, authorities);
-            authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContext securityContext = SecurityContextHolder.createEmptyContext();
+                AbstractAuthenticationToken authenticationToken =
+                        new UsernamePasswordAuthenticationToken(username, null, authorities);
+                authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-            securityContext.setAuthentication(authenticationToken);
-            SecurityContextHolder.setContext(securityContext);
+                securityContext.setAuthentication(authenticationToken);
+                SecurityContextHolder.setContext(securityContext);
+            }
 
         } catch (Exception e) {
             e.printStackTrace();

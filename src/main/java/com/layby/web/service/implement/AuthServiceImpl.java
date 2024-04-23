@@ -1,5 +1,6 @@
 package com.layby.web.service.implement;
 
+import com.layby.domain.common.RedisDao;
 import com.layby.domain.common.Role;
 import com.layby.domain.dto.request.auth.*;
 import com.layby.domain.dto.response.ResponseDto;
@@ -17,10 +18,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 
 import static com.layby.domain.common.ErrorCode.*;
@@ -37,6 +40,8 @@ public class AuthServiceImpl implements AuthService {
 
     private final JwtProvider jwtProvider;
     private final EmailProvider emailProvider;
+
+    private final RedisDao redisDao;
 
     @Override
     @Transactional(readOnly = true)
@@ -169,6 +174,7 @@ public class AuthServiceImpl implements AuthService {
             e.printStackTrace();
             throw new InternalServerErrorException(INTERNAL_SERVER_ERROR.getMessage());
         }
+
         return ResponseDto.success();
     }
 
@@ -177,10 +183,11 @@ public class AuthServiceImpl implements AuthService {
     public ResponseEntity<SignInResponseDto> signIn(SignInRequestDto dto) {
 
         String token = null;
+        String encodedUsername = null;
 
         try {
             String username = dto.getUsername();
-            String encodedUsername = personalDataEncoder.encode(username);
+            encodedUsername = personalDataEncoder.encode(username);
             User user = userRepository.findByUsername(encodedUsername);
             if (user == null) throw new SignInFailedException(SIGN_IN_FAIL.getMessage());
 
@@ -196,9 +203,30 @@ public class AuthServiceImpl implements AuthService {
             throw new InternalServerErrorException(INTERNAL_SERVER_ERROR.getMessage());
         }
 
+        redisDao.setValue("JWT_TOKEN:" + encodedUsername, token, Duration.ofMillis(jwtProvider.getTokenValidTime()));
         SignInResponseDto signInResponseDto = new SignInResponseDto(token);
 
         return ResponseEntity.status(HttpStatus.OK).body(signInResponseDto);
+    }
+
+    public ResponseEntity<ResponseDto> logout(Authentication authentication) {
+        String username = authentication.getPrincipal().toString();
+        String encodedUsername = null;
+
+        try {
+            encodedUsername = personalDataEncoder.encode(username);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new InternalServerErrorException(INTERNAL_SERVER_ERROR.getMessage());
+        }
+
+        String key = "JWT_TOKEN:" + encodedUsername;
+        String token = redisDao.getValue(key);
+        if (token != null) {
+            redisDao.deleteValue(key);
+        }
+
+        return ResponseDto.success();
     }
 
     private String getCertificationNumber() {

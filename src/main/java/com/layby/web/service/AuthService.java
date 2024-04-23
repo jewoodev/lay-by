@@ -4,6 +4,7 @@ import com.layby.domain.dto.request.auth.*;
 import com.layby.domain.dto.response.ResponseDto;
 import com.layby.domain.dto.response.auth.*;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 
 public interface AuthService {
 
@@ -16,4 +17,6 @@ public interface AuthService {
     ResponseEntity<ResponseDto> signUp(SignUpRequestDto dto);
 
     ResponseEntity<SignInResponseDto> signIn(SignInRequestDto dto);
+
+    ResponseEntity<ResponseDto> logout(Authentication authentication);
 }

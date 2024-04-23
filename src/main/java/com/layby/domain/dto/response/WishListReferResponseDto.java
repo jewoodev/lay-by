@@ -14,9 +14,11 @@ public class WishListReferResponseDto {
 
     private int totalPrice = 0;
 
-    public WishListReferResponseDto(List<WishItem> wishItemEntities) {
+    //== 생성자 ==//
+    /** 위시아이템 엔티티 리스트로 WishListReferResponseDto를 만드는 생성자 **/
+    public WishListReferResponseDto(List<WishItem> wishItems) {
 
-        for (WishItem wishItem : wishItemEntities) {
+        for (WishItem wishItem : wishItems) {
             this.wishItemResponseDtos
                     .add(
               WishItemResponseDto.fromWishItem(wishItem)

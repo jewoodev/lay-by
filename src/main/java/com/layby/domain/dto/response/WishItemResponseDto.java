@@ -1,5 +1,6 @@
 package com.layby.domain.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.layby.domain.entity.WishItem;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,8 +10,10 @@ import lombok.Setter;
 @Builder
 public class WishItemResponseDto {
 
+    @JsonIgnore
     private Long wishItemId;
 
+    @JsonIgnore
     private Long itemId;
 
     private String itemName;
@@ -21,6 +24,8 @@ public class WishItemResponseDto {
 
     private int totalPrice;
 
+    //== 생성자 메서드 ==//
+    /** 위시아이템 엔티티로 WishItemResponseDto를 만드는 메서드 **/
     public static WishItemResponseDto fromWishItem(WishItem wishItem) {
 
         WishItemResponseDto wishItemResponseDto = WishItemResponseDto.builder()

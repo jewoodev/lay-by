@@ -29,6 +29,9 @@ public class WishItemController {
         return wishItemService.referWishList(userId);
     }
 
+    /**
+    클라이언트가 위시리스트에서 구입할 상품을 고르고 배송받을 주소를 고를 때 사용되는 API
+    */
     @PostMapping("/{user_id}")
     @PreAuthorize("hasAnyRole('ROLE_USER')")
     public ResponseEntity<ResponseDto> purchaseWishList(
@@ -40,6 +43,9 @@ public class WishItemController {
         return wishItemService.purchaseWishList(userId, addressId, dtos);
     }
 
+    /**
+     사용자의 주소 중 한 곳으로 위시리스트 상품 모두를 주문하는 API
+     */
     @PostMapping("/{user_id}/test")
     @PreAuthorize("hasAnyRole('ROLE_USER')")
     public ResponseEntity<ResponseDto> purchaseWishListTest(
