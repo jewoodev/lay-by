@@ -2,10 +2,10 @@ package com.layby.web.service.implement;
 
 import com.layby.domain.common.ErrorCode;
 import com.layby.domain.dto.request.AddressRequestDto;
-import com.layby.domain.dto.response.AddressUpdateResponseDto;
+import com.layby.domain.dto.response.AddressListReferResponseDto;
 import com.layby.domain.dto.response.ResponseDto;
-import com.layby.domain.entity.AddressEntity;
-import com.layby.domain.entity.UserEntity;
+import com.layby.domain.entity.Address;
+import com.layby.domain.entity.User;
 import com.layby.domain.repository.AddressRepository;
 import com.layby.web.exception.InternalServerErrorException;
 import com.layby.web.service.AddressService;
@@ -13,13 +13,20 @@ import com.layby.web.service.UserService;
 import com.layby.web.util.AES256;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+
+import java.util.List;
 
 import static com.layby.domain.common.ErrorCode.*;
 
 @Slf4j
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
 public class AddressServiceImpl implements AddressService {
@@ -29,22 +36,27 @@ public class AddressServiceImpl implements AddressService {
     private final AES256 personalDataEncoder;
 
     @Override
-    public AddressEntity findByAddressId(Long addressId) {
-        return addressRepository.findById(addressId).orElse(null);
+    public Address findByAddressId(Long addressId) {
+        return addressRepository.findByAddressId(addressId);
+    }
+
+    @Override
+    public List<Address> findAllByUser(User user) {
+        return addressRepository.findAllByUser(user);
     }
 
     @Override
     @Transactional
-    public ResponseEntity<AddressUpdateResponseDto> updateAddress(Long addressId, AddressRequestDto dto) {
-        AddressEntity foundAddressEntity = addressRepository.findById(addressId).orElse(null);
-        foundAddressEntity.updateAddressEntity(dto);
+    public ResponseEntity<ResponseDto> updateAddress(Long addressId, AddressRequestDto dto) {
+        Address foundAddress = addressRepository.findById(addressId).orElse(null);
+        foundAddress.updateAddressEntity(dto);
 
-        return AddressUpdateResponseDto.success();
+        return ResponseDto.success();
     }
 
     @Override
     @Transactional
-    public ResponseEntity<AddressUpdateResponseDto> addAddress(String username, AddressRequestDto dto) {
+    public ResponseEntity<ResponseDto> addAddress(String username, AddressRequestDto dto) {
 
         String encodedUsername = null;
 
@@ -55,19 +67,42 @@ public class AddressServiceImpl implements AddressService {
             throw new InternalServerErrorException(INTERNAL_SERVER_ERROR.getMessage());
         }
 
-        log.info("dto's city = {}", dto.getCity());
-        log.info("dto's street = {}", dto.getStreet());
-        log.info("dto's zipCode = {}", dto.getZipCode());
+        String city = dto.getCity();
+        String street = dto.getStreet();
+        String zipCode = dto.getZipCode();
+        String encodedCity = null;
+        String encodedStreet = null;
+        String encodedZipCode = null;
 
-        UserEntity userEntity = userService.findByUsername(encodedUsername);
-        AddressEntity addressEntity = AddressEntity.builder()
-                .city(dto.getCity())
-                .street(dto.getStreet())
-                .zipCode(dto.getZipCode())
-                .userEntity(userEntity)
-                .build();
-        addressRepository.save(addressEntity);
+        try {
+            encodedCity = personalDataEncoder.encode(city);
+            encodedStreet = personalDataEncoder.encode(street);
+            encodedZipCode = personalDataEncoder.encode(zipCode);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new InternalServerErrorException(INTERNAL_SERVER_ERROR.getMessage());
+        }
 
-        return AddressUpdateResponseDto.success();
+        User user = userService.findByUsername(encodedUsername);
+        Address address = Address.builder()
+                    .city(encodedCity)
+                    .street(encodedStreet)
+                    .zipCode(encodedZipCode)
+                    .user(user)
+                    .build();
+
+        addressRepository.save(address);
+
+        return ResponseDto.success();
+    }
+
+    @Override
+    public ResponseEntity<AddressListReferResponseDto> referAddressListByUserId(Long userId) {
+
+        User user = userService.findByUserId(userId);
+        List<Address> addressList = findAllByUser(user);
+        AddressListReferResponseDto addressListReferResponseDto = new AddressListReferResponseDto(addressList);
+
+        return ResponseEntity.status(HttpStatus.OK).body(addressListReferResponseDto);
     }
 }

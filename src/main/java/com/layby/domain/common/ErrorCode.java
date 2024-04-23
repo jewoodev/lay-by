@@ -6,19 +6,25 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum ErrorCode {
-    VALIDATION_FAIL("VF", "Validation failed."),
+    VALIDATION_FAIL("401", "Validation failed."),
 
-    DUPLICATED_USERNAME("DI", "Duplicate Id."),
+    DUPLICATED_USERNAME("409", "Duplicate Id."),
 
-    SIGN_IN_FAIL("SF", "Login information mismatch."),
+    SIGN_IN_FAIL("400", "Login information mismatch."),
 
-    CERTIFICATION_FAIL("CF", "Certification failed"),
+    CERTIFICATION_FAIL("400", "Certification failed"),
 
-    MAIL_FAIL("MF", "Mail send failed."),
+    MAIL_FAIL("400", "Mail send failed."),
 
-    DATABASE_ERROR("DBE", "Database error."),
+    DATABASE_ERROR("500", "Database error."),
 
-    INTERNAL_SERVER_ERROR("ISE", "Server Error aroused. Please contact the server administrator");
+    INTERNAL_SERVER_ERROR("500", "Server Error aroused. Please contact the server administrator"),
+
+    NOT_ENOUGH_STOCK("409", "All stock has been sold out."),
+
+    DELIVERY_ALEADY_START("409", "Cancellation is only possible before delivery begins."),
+
+    REFUND_IS_NOT_POSSIBLE("409", "Refunds are not possible after 2 days after delivery.");
 
 
     private final String code;

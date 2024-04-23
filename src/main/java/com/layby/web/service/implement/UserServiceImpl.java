@@ -1,12 +1,12 @@
 package com.layby.web.service.implement;
 
 
+import com.layby.domain.common.ErrorCode;
 import com.layby.domain.dto.request.PhoneNumberUpdateRequestDto;
 import com.layby.domain.dto.request.UserPasswordUpdateRequestDto;
-import com.layby.domain.dto.response.PhoneNumberUpdateResponseDto;
-import com.layby.domain.dto.response.UserPasswordUpdateResponseDto;
+import com.layby.domain.dto.response.ResponseDto;
 import com.layby.domain.dto.response.UserResponseDto;
-import com.layby.domain.entity.UserEntity;
+import com.layby.domain.entity.User;
 import com.layby.domain.repository.UserRepository;
 import com.layby.web.exception.AES256Exception;
 import com.layby.web.service.UserService;
@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
 public class UserServiceImpl implements UserService {
@@ -27,15 +28,15 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public UserEntity findByUserId(Long userId) {
-        return userRepository.findById(userId).orElse(null);
+    public User findByUserId(Long userId) {
+        return userRepository.findByUserId(userId);
     }
 
     @Override
     public UserResponseDto referUser(Long userId) {
-        UserEntity userEntity = userRepository.findById(userId).orElse(null);
+        User user = userRepository.findByUserId(userId);
 
-        String encodedPhoneNumber = userEntity.getPhoneNumber();
+        String encodedPhoneNumber = user.getPhoneNumber();
         String phoneNumber = null;
 
         log.info("encodedPhoneNumber = {}", encodedPhoneNumber);
@@ -44,22 +45,22 @@ public class UserServiceImpl implements UserService {
             phoneNumber = personalDataEncoder.decode(encodedPhoneNumber);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new AES256Exception("서버에서 문제가 발생되었습니다. 서버 관리자에게 문의해주세요.");
+            throw new AES256Exception(ErrorCode.INTERNAL_SERVER_ERROR.getMessage());
         }
 
         return new UserResponseDto(phoneNumber);
     }
 
     @Override
-    public UserEntity findByUsername(String username) {
+    public User findByUsername(String username) {
         return userRepository.findByUsername(username);
     }
 
 
     @Override
     @Transactional
-    public ResponseEntity<PhoneNumberUpdateResponseDto> updatePhoneNumber(Long userId, PhoneNumberUpdateRequestDto dto) {
-        UserEntity foundUserEntity = userRepository.findById(userId).orElse(null);
+    public ResponseEntity<ResponseDto> updatePhoneNumber(Long userId, PhoneNumberUpdateRequestDto dto) {
+        User foundUser = userRepository.findByUserId(userId);
 
         String phoneNumber = dto.getPhoneNumber();
         String encodedPhoneNumber = null;
@@ -68,18 +69,18 @@ public class UserServiceImpl implements UserService {
             encodedPhoneNumber  = personalDataEncoder.encode(phoneNumber);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new AES256Exception("서버에서 문제가 발생되었습니다. 서버 관리자에게 문의해주세요.");
+            throw new AES256Exception(ErrorCode.INTERNAL_SERVER_ERROR.getMessage());
         }
 
-        foundUserEntity.updatePhoneNumber(encodedPhoneNumber);
+        foundUser.updatePhoneNumber(encodedPhoneNumber);
 
-        return PhoneNumberUpdateResponseDto.success();
+        return ResponseDto.success();
     }
 
     @Override
     @Transactional
-    public ResponseEntity<UserPasswordUpdateResponseDto> updatePassword(Long userId, UserPasswordUpdateRequestDto dto) {
-        UserEntity foundUserEntity = userRepository.findById(userId).orElse(null);
+    public ResponseEntity<ResponseDto> updatePassword(Long userId, UserPasswordUpdateRequestDto dto) {
+        User foundUser = userRepository.findByUserId(userId);
 
         String password = dto.getPassword();
         String encodedPassword = null;
@@ -88,11 +89,11 @@ public class UserServiceImpl implements UserService {
             encodedPassword = personalDataEncoder.encode(password);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new AES256Exception("서버에서 문제가 발생되었습니다. 서버 관리자에게 문의해주세요.");
+            throw new AES256Exception(ErrorCode.INTERNAL_SERVER_ERROR.getMessage());
         }
 
-        foundUserEntity.updatePassword(password);
+        foundUser.updatePassword(encodedPassword);
 
-        return UserPasswordUpdateResponseDto.success();
+        return ResponseDto.success();
     }
 }

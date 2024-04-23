@@ -1,7 +1,6 @@
 package com.layby.web.config;
 
 import com.layby.web.filter.JwtAuthenticationFilter;
-import com.layby.web.util.AES256;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -87,6 +86,6 @@ class FailedAuthenticationEntryPoint implements AuthenticationEntryPoint {
                          AuthenticationException authException) throws IOException, ServletException {
         response.setContentType("application/json");
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-        response.getWriter().write("{\"code\": \"AF\", \"message\": \"Authentication Failed.\"}");
+        response.getWriter().write("{\"code\": \"401\", \"message\": \"Authentication Failed.\"}");
     }
 }

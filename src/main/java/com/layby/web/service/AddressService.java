@@ -1,17 +1,23 @@
 package com.layby.web.service;
 
 import com.layby.domain.dto.request.AddressRequestDto;
-import com.layby.domain.dto.response.AddressUpdateResponseDto;
+import com.layby.domain.dto.response.AddressListReferResponseDto;
 import com.layby.domain.dto.response.ResponseDto;
-import com.layby.domain.entity.AddressEntity;
+import com.layby.domain.entity.Address;
+import com.layby.domain.entity.User;
 import org.springframework.http.ResponseEntity;
+
+import java.util.List;
 
 public interface AddressService {
 
-    AddressEntity findByAddressId(Long addressId);
+    Address findByAddressId(Long addressId);
 
+    List<Address> findAllByUser(User user);
 
-    ResponseEntity<? super AddressUpdateResponseDto> updateAddress(Long addressId, AddressRequestDto dto);
+    ResponseEntity<ResponseDto> updateAddress(Long addressId, AddressRequestDto dto);
 
-    ResponseEntity<? super AddressUpdateResponseDto> addAddress(String username, AddressRequestDto dto);
+    ResponseEntity<ResponseDto> addAddress(String username, AddressRequestDto dto);
+
+    ResponseEntity<AddressListReferResponseDto> referAddressListByUserId(Long userId);
 }

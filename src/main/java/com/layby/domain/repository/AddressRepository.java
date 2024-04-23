@@ -1,8 +1,14 @@
 package com.layby.domain.repository;
 
-import com.layby.domain.entity.AddressEntity;
+import com.layby.domain.entity.Address;
+import com.layby.domain.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface AddressRepository extends JpaRepository<AddressEntity, Long> {
+import java.util.List;
 
+public interface AddressRepository extends JpaRepository<Address, Long> {
+
+    Address findByAddressId(Long addressId);
+
+    List<Address> findAllByUser(User user);
 }

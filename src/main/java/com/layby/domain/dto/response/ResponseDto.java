@@ -12,8 +12,13 @@ public class ResponseDto {
     private String code;
     private String message;
 
-    public ResponseDto() {
-        this.code = "SU";
+    private ResponseDto() {
+        this.code = "200";
         this.message = "Success.";
+    }
+
+    public static ResponseEntity<ResponseDto> success() {
+        ResponseDto responseBody = new ResponseDto();
+        return ResponseEntity.status(HttpStatus.OK).body(responseBody);
     }
 }

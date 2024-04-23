@@ -1,27 +1,24 @@
 package com.layby.web.service;
 
-
 import com.layby.domain.dto.request.PhoneNumberUpdateRequestDto;
 import com.layby.domain.dto.request.UserPasswordUpdateRequestDto;
-import com.layby.domain.dto.response.PhoneNumberUpdateResponseDto;
 import com.layby.domain.dto.response.ResponseDto;
-import com.layby.domain.dto.response.UserPasswordUpdateResponseDto;
 import com.layby.domain.dto.response.UserResponseDto;
-import com.layby.domain.entity.UserEntity;
+import com.layby.domain.entity.User;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 
 public interface UserService {
 
-    UserEntity findByUserId(Long userId);
+    User findByUserId(Long userId);
 
     UserResponseDto referUser(Long userId);
 
-    UserEntity findByUsername(String username);
+    User findByUsername(String username);
 
     @Transactional
-    ResponseEntity<? super PhoneNumberUpdateResponseDto> updatePhoneNumber(Long userId, PhoneNumberUpdateRequestDto dto);
+    ResponseEntity<ResponseDto> updatePhoneNumber(Long userId, PhoneNumberUpdateRequestDto dto);
 
     @Transactional
-    ResponseEntity<? super UserPasswordUpdateResponseDto> updatePassword(Long userId, UserPasswordUpdateRequestDto dto);
+    ResponseEntity<ResponseDto> updatePassword(Long userId, UserPasswordUpdateRequestDto dto);
 }
