@@ -7,6 +7,8 @@ import com.layby.domain.dto.response.auth.*;
 import com.layby.web.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -54,5 +56,11 @@ public class AuthController {
             @RequestBody @Valid SignInRequestDto requestBody
     ) {
         return authService.signIn(requestBody);
+    }
+
+    @PostMapping("/logout")
+    @PreAuthorize("hasAnyRole('ROLE_USER')")
+    public ResponseEntity<ResponseDto> logout(Authentication authentication) {
+        return authService.logout(authentication);
     }
 }

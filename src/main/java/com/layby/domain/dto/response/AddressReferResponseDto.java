@@ -21,6 +21,8 @@ public class AddressReferResponseDto {
 
     private String zipCode;
 
+
+    //== 생성자 ==//
     // Address -> AddressReferResponseDto로 변환하는 생성자
     public AddressReferResponseDto(Address address) {
         this.addressId = address.getAddressId();

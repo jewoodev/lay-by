@@ -13,11 +13,18 @@ import static org.springframework.http.HttpStatus.*;
 public class RestResponseExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ResponseStatus(INTERNAL_SERVER_ERROR)
-    @ExceptionHandler(value = { AES256Exception.class, AccessDeniedException.class,
-            DatabaseErrorException.class, InternalServerErrorException.class })
+    @ExceptionHandler(value = { AES256Exception.class, DatabaseErrorException.class,
+            InternalServerErrorException.class })
+    @ResponseBody
+    protected ErrorDto interalServerError(RuntimeException ex, WebRequest request) {
+        return new ErrorDto(INTERNAL_SERVER_ERROR.value(), ex.getMessage());
+    }
+
+    @ResponseStatus(FORBIDDEN)
+    @ExceptionHandler(value = { AccessDeniedException.class })
     @ResponseBody
     protected ErrorDto forbidden(RuntimeException ex, WebRequest request) {
-        return new ErrorDto(INTERNAL_SERVER_ERROR.value(), ex.getMessage());
+        return new ErrorDto(FORBIDDEN.value(), ex.getMessage());
     }
 
     @ResponseStatus(UNAUTHORIZED)

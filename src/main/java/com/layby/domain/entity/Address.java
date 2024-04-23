@@ -29,7 +29,7 @@ public class Address extends BaseTimeEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    public void updateAddressEntity(AddressRequestDto dto) {
+    public void updateAddress(AddressRequestDto dto) {
         this.city = dto.getCity();
         this.street = dto.getStreet();
         this.zipCode = dto.getZipCode();

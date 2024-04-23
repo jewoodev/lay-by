@@ -13,6 +13,8 @@ public class AddressListReferResponseDto {
 
     private List<AddressReferResponseDto> addressReferResponseDtos = new ArrayList<>();
 
+    //== 생성자 ==//
+    /** Address 엔티티 리스트로 AddressListReferResponseDto를 생성하는 생성자 **/
     public AddressListReferResponseDto(List<Address> addressList) {
 
         for (Address address : addressList) {

@@ -1,6 +1,5 @@
 package com.layby.web.service.implement;
 
-import com.layby.domain.common.ErrorCode;
 import com.layby.domain.dto.request.AddressRequestDto;
 import com.layby.domain.dto.response.AddressListReferResponseDto;
 import com.layby.domain.dto.response.ResponseDto;
@@ -15,11 +14,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
@@ -49,7 +45,7 @@ public class AddressServiceImpl implements AddressService {
     @Transactional
     public ResponseEntity<ResponseDto> updateAddress(Long addressId, AddressRequestDto dto) {
         Address foundAddress = addressRepository.findById(addressId).orElse(null);
-        foundAddress.updateAddressEntity(dto);
+        foundAddress.updateAddress(dto);
 
         return ResponseDto.success();
     }
@@ -58,26 +54,19 @@ public class AddressServiceImpl implements AddressService {
     @Transactional
     public ResponseEntity<ResponseDto> addAddress(String username, AddressRequestDto dto) {
 
-        String encodedUsername = null;
-
-        try {
-            encodedUsername = personalDataEncoder.encode(username);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new InternalServerErrorException(INTERNAL_SERVER_ERROR.getMessage());
-        }
-
         String city = dto.getCity();
         String street = dto.getStreet();
         String zipCode = dto.getZipCode();
         String encodedCity = null;
         String encodedStreet = null;
         String encodedZipCode = null;
+        String encodedUsername = null;
 
         try {
             encodedCity = personalDataEncoder.encode(city);
             encodedStreet = personalDataEncoder.encode(street);
             encodedZipCode = personalDataEncoder.encode(zipCode);
+            encodedUsername = personalDataEncoder.encode(username);
         } catch (Exception e) {
             e.printStackTrace();
             throw new InternalServerErrorException(INTERNAL_SERVER_ERROR.getMessage());

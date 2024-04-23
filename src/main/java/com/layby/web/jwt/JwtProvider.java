@@ -4,6 +4,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,6 +21,9 @@ public class JwtProvider implements InitializingBean {
 
     private final String secretKey;
     private Key key;
+
+    @Getter
+    private final long tokenValidTime = 60 * 60 * 1000L;
 
     public JwtProvider(
             @Value("${jwt.secret-key}") String secretKey) {
