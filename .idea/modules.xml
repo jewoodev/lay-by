@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/lay-by.main.iml" filepath="$PROJECT_DIR$/.idea/modules/lay-by.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lay-by.iml" filepath="$PROJECT_DIR$/lay-by.iml" />
     </modules>
   </component>
 </project>
