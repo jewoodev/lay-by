@@ -38,14 +38,8 @@ public class User {
     @Column(name = "phone_number", length = 50)
     private String phoneNumber;
 
-    @Column(name = "address_id")
-    private Long addressId;
-
     @Enumerated(EnumType.STRING)
     private Role role;
-
-    @Column(name = "order_id")
-    private Long orderId;
 
     @CreatedDate
     private LocalDateTime createdDate;
