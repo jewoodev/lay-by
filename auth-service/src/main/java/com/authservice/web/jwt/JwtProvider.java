@@ -1,5 +1,7 @@
 package com.authservice.web.jwt;
 
+import com.authservice.domain.entity.User;
+import com.authservice.domain.repository.UserRepository;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
@@ -22,12 +24,19 @@ public class JwtProvider implements InitializingBean {
     private final String secretKey;
     private Key key;
 
+    private static final String AUTHORITIES_KEY = "auth";
+
     @Getter
     private final long tokenValidTime = 60 * 60 * 1000L;
 
+    private UserRepository userRepository;
+
     public JwtProvider(
-            @Value("${jwt.secret-key}") String secretKey) {
+            @Value("${jwt.secret-key}") String secretKey,
+            UserRepository userRepository
+    ) {
         this.secretKey = secretKey;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -38,11 +47,14 @@ public class JwtProvider implements InitializingBean {
 
     public String createToken(String username) {
 
+        User user = userRepository.findByUsername(username);
+
         Date expiredDate = Date.from(Instant.now().plus(1, ChronoUnit.HOURS));
 
         return Jwts.builder()
                 .signWith(key, SignatureAlgorithm.HS512)
                 .setSubject(username).setIssuedAt(new Date())
+                .claim(AUTHORITIES_KEY, user.getRole().name())
                 .setExpiration(expiredDate)
                 .compact();
     }

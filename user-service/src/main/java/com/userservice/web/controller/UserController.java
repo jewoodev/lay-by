@@ -7,9 +7,7 @@ import com.userservice.domain.dto.response.UserResponseDto;
 import com.userservice.web.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
@@ -19,11 +17,11 @@ public class UserController {
 
     private final UserService userService;
 
-    @GetMapping("/users")
+    @GetMapping("/{user_id}")
     public ResponseEntity<UserResponseDto> referUser(
-            Authentication authentication
+            @PathVariable(name = "user_id") Long userId
     ) {
-        return userService.referUser(authentication);
+        return userService.referUser(userId);
     }
 
     @PatchMapping("/{user_id}/update-phone-number")
