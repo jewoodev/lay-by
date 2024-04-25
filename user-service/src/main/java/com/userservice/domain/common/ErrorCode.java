@@ -24,7 +24,9 @@ public enum ErrorCode {
 
     DELIVERY_ALEADY_START("409", "Cancellation is only possible before delivery begins."),
 
-    REFUND_IS_NOT_POSSIBLE("409", "Refunds are not possible after 2 days after delivery.");
+    REFUND_IS_NOT_POSSIBLE("409", "Refunds are not possible after 2 days after delivery."),
+
+    INCORRECT_ACCOUNT_REQUEST("400", "The request was made to the wrong account.");
 
 
     private final String code;

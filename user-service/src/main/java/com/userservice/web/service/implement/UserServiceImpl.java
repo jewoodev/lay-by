@@ -10,11 +10,18 @@ import com.userservice.domain.repository.UserRepository;
 import com.userservice.web.exception.AES256Exception;
 import com.userservice.web.service.UserService;
 import com.userservice.web.util.AES256;
+import jakarta.ws.rs.BadRequestException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static com.userservice.domain.common.ErrorCode.*;
+import static com.userservice.domain.common.ErrorCode.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.*;
 
 @Slf4j
 @Transactional(readOnly = true)
@@ -32,22 +39,33 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponseDto referUser(Long userId) {
-        User user = userRepository.findByUserId(userId);
+    public ResponseEntity<UserResponseDto> referUser(Authentication authentication) {
+        String username = authentication.getPrincipal().toString();
+        User user = userRepository.findByUsername(username);
 
+        String encodedEmail = user.getEmail();
         String encodedPhoneNumber = user.getPhoneNumber();
+        String email = null;
         String phoneNumber = null;
 
         log.info("encodedPhoneNumber = {}", encodedPhoneNumber);
 
         try {
+            email = personalDataEncoder.decode(encodedEmail);
             phoneNumber = personalDataEncoder.decode(encodedPhoneNumber);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new AES256Exception(ErrorCode.INTERNAL_SERVER_ERROR.getMessage());
+            throw new AES256Exception(INTERNAL_SERVER_ERROR.getMessage());
         }
 
-        return new UserResponseDto(phoneNumber);
+        UserResponseDto responseBody = UserResponseDto.builder()
+                                                .userId(user.getUserId())
+                                                .username(username)
+                                                .email(email)
+                                                .phoneNumber(phoneNumber)
+                                                .build();
+
+        return ResponseEntity.status(OK).body(responseBody);
     }
 
     @Override
@@ -67,7 +85,7 @@ public class UserServiceImpl implements UserService {
             encodedPhoneNumber  = personalDataEncoder.encode(phoneNumber);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new AES256Exception(ErrorCode.INTERNAL_SERVER_ERROR.getMessage());
+            throw new AES256Exception(INTERNAL_SERVER_ERROR.getMessage());
         }
 
         foundUser.updatePhoneNumber(encodedPhoneNumber);
@@ -86,7 +104,7 @@ public class UserServiceImpl implements UserService {
             encodedPassword = personalDataEncoder.encode(password);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new AES256Exception(ErrorCode.INTERNAL_SERVER_ERROR.getMessage());
+            throw new AES256Exception(INTERNAL_SERVER_ERROR.getMessage());
         }
 
         foundUser.updatePassword(encodedPassword);
