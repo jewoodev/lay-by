@@ -1,9 +1,9 @@
 package com.userservice.web.controller;
 
 import com.userservice.domain.dto.ResponseDto;
-import com.userservice.domain.dto.request.PhoneNumberUpdateRequestDto;
-import com.userservice.domain.dto.request.UserPasswordUpdateRequestDto;
-import com.userservice.domain.dto.response.UserResponseDto;
+import com.userservice.domain.vo.PhoneNumberUpdateRequest;
+import com.userservice.domain.vo.UserPasswordUpdateRequest;
+import com.userservice.domain.dto.UserDto;
 import com.userservice.web.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/user-service")
+@RequestMapping("/user")
 public class UserController {
 
     private final UserService userService;
 
     @GetMapping("/{user_id}")
-    public ResponseEntity<UserResponseDto> referUser(
+    public ResponseEntity<UserDto> referUser(
             @PathVariable(name = "user_id") Long userId
     ) {
         return userService.referUser(userId);
@@ -27,7 +27,7 @@ public class UserController {
     @PatchMapping("/{user_id}/update-phone-number")
     public ResponseEntity<ResponseDto> updatePhoneNumber(
             @PathVariable(name = "user_id") Long userId,
-            @RequestBody @Valid PhoneNumberUpdateRequestDto dto
+            @RequestBody @Valid PhoneNumberUpdateRequest dto
     ) {
         return userService.updatePhoneNumber(userId, dto);
     }
@@ -35,7 +35,7 @@ public class UserController {
     @PatchMapping("/{user_id}/update-password")
     public ResponseEntity<ResponseDto> updatePassword(
             @PathVariable(name = "user_id") Long userId,
-            @RequestBody @Valid UserPasswordUpdateRequestDto dto
+            @RequestBody @Valid UserPasswordUpdateRequest dto
     ) {
         return userService.updatePassword(userId, dto);
     }
