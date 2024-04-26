@@ -1,24 +1,20 @@
 package com.userservice.web.service.implement;
 
-import com.userservice.domain.common.ErrorCode;
 import com.userservice.domain.dto.ResponseDto;
-import com.userservice.domain.dto.request.PhoneNumberUpdateRequestDto;
-import com.userservice.domain.dto.request.UserPasswordUpdateRequestDto;
-import com.userservice.domain.dto.response.UserResponseDto;
+import com.userservice.domain.vo.PhoneNumberUpdateRequest;
+import com.userservice.domain.vo.UserPasswordUpdateRequest;
+import com.userservice.domain.dto.UserDto;
 import com.userservice.domain.entity.User;
 import com.userservice.domain.repository.UserRepository;
 import com.userservice.web.exception.AES256Exception;
 import com.userservice.web.service.UserService;
-import com.userservice.web.util.AES256;
-import jakarta.ws.rs.BadRequestException;
+import com.userservice.web.util.PersonalDataEncoder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import static com.userservice.domain.common.ErrorCode.*;
 import static com.userservice.domain.common.ErrorCode.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.*;
 
@@ -29,8 +25,7 @@ import static org.springframework.http.HttpStatus.*;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
-    private final AES256 personalDataEncoder;
-
+    private final PersonalDataEncoder personalDataEncoder;
 
     @Override
     public User findByUserId(Long userId) {
@@ -38,7 +33,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseEntity<UserResponseDto> referUser(Long userId) {
+    public ResponseEntity<UserDto> referUser(Long userId) {
         User user = userRepository.findByUserId(userId);
 
         String encodedUsername = user.getUsername();
@@ -59,7 +54,7 @@ public class UserServiceImpl implements UserService {
             throw new AES256Exception(INTERNAL_SERVER_ERROR.getMessage());
         }
 
-        UserResponseDto responseBody = UserResponseDto.builder()
+        UserDto responseBody = UserDto.builder()
                                                 .userId(user.getUserId())
                                                 .username(username)
                                                 .email(email)
@@ -76,7 +71,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public ResponseEntity<ResponseDto> updatePhoneNumber(Long userId, PhoneNumberUpdateRequestDto dto) {
+    public ResponseEntity<ResponseDto> updatePhoneNumber(Long userId, PhoneNumberUpdateRequest dto) {
         User foundUser = userRepository.findByUserId(userId);
 
         String phoneNumber = dto.getPhoneNumber();
@@ -95,7 +90,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseEntity<ResponseDto> updatePassword(Long userId, UserPasswordUpdateRequestDto dto) {
+    @Transactional
+    public ResponseEntity<ResponseDto> updatePassword(Long userId, UserPasswordUpdateRequest dto) {
         User foundUser = userRepository.findByUserId(userId);
 
         String password = dto.getPassword();
@@ -114,11 +110,23 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public ResponseEntity<ResponseDto> updateRoleAfterEmailCF(Long userId) {
         User user = userRepository.findByUserId(userId);
 
-        user.updateRoleAfterEmailCF();
+        user.afterCertification();
 
         return ResponseDto.success();
+    }
+
+    @Override
+    public boolean existsByUsername(String username) {
+        return userRepository.existsByUsername(username);
+    }
+
+    @Override
+    public Long save(User user) {
+        User saved = userRepository.save(user);
+        return saved.getUserId();
     }
 }

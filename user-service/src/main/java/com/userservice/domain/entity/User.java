@@ -1,15 +1,18 @@
 package com.userservice.domain.entity;
 
-import com.userservice.domain.common.Role;
+import com.userservice.domain.vo.auth.SignUpRequest;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
+
+import com.userservice.domain.common.Role;
+
+import static com.userservice.domain.common.Role.USER;
 
 @Getter @Builder
 @AllArgsConstructor
@@ -41,11 +44,14 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @CreatedDate
+    @Column(name = "created_date")
     private LocalDateTime createdDate;
 
-    @LastModifiedDate
+    @Column(name = "modified_date")
     private LocalDateTime modifiedDate;
+
+    @Column(name = "uuid")
+    private String uuid;
 
     public void updatePhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
@@ -55,7 +61,24 @@ public class User {
         this.password = password;
     }
 
-    public void updateRoleAfterEmailCF() {
-        this.role = Role.USER;
+    //== 생성자 메서드 ==//
+    /** sign up request dto를 받는 생성자 메서드 **/
+    public static User forSignIn(SignUpRequest dto) {
+        return User.builder()
+                .username(dto.getUsername())
+                .password(dto.getPassword())
+                .email(dto.getEmail())
+                .phoneNumber(dto.getPhoneNumber())
+                .createdDate(LocalDateTime.now())
+                .modifiedDate(LocalDateTime.now())
+                .uuid(UUID.randomUUID().toString())
+                .build();
+    }
+
+    //== 비즈니스 로직 ==//
+    /** 이메일 인증 후 역할 부여와 인증 날짜 저장 **/
+    public void afterCertification() {
+        this.role = USER;
+        this.emailVerifiedAt = LocalDateTime.now();
     }
 }
