@@ -1,11 +1,15 @@
 package com.userservice.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Getter @Setter
+
+@Data @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class UserDto {
 
     @JsonIgnore
@@ -13,15 +17,10 @@ public class UserDto {
 
     private String username;
 
+    @JsonIgnore
+    private String password;
+
     private String email;
 
     private String phoneNumber;
-
-    @Builder
-    public UserDto(Long userId, String username, String email, String phoneNumber) {
-        this.userId = userId;
-        this.username = username;
-        this.email = email;
-        this.phoneNumber = phoneNumber;
-    }
 }

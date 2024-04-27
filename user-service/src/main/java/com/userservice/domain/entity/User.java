@@ -1,6 +1,6 @@
 package com.userservice.domain.entity;
 
-import com.userservice.domain.vo.auth.SignUpRequest;
+import com.userservice.domain.dto.UserDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -44,14 +44,14 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+        @Column(name = "uuid")
+    private String uuid;
+
     @Column(name = "created_date")
     private LocalDateTime createdDate;
 
     @Column(name = "modified_date")
     private LocalDateTime modifiedDate;
-
-    @Column(name = "uuid")
-    private String uuid;
 
     public void updatePhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
@@ -62,8 +62,8 @@ public class User {
     }
 
     //== 생성자 메서드 ==//
-    /** sign up request dto를 받는 생성자 메서드 **/
-    public static User forSignIn(SignUpRequest dto) {
+    /** sign up 과정에서 dto를 받는 생성자 메서드 **/
+    public static User fromDto(UserDto dto) {
         return User.builder()
                 .username(dto.getUsername())
                 .password(dto.getPassword())
