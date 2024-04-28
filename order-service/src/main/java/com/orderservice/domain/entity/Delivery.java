@@ -27,24 +27,19 @@ public class Delivery {
     @Enumerated(EnumType.STRING)
     private DeliveryStatus deliveryStatus;
 
-    @Column(name = "order_id")
-    private Long orderId;
-
     @Column(name = "created_date")
     private LocalDateTime createdDate;
 
     @Column(name = "modified_date")
     private LocalDateTime modifiedDate;
 
-    public void mappingOrder(Long orderId) {
-        this.orderId = orderId;
-    }
-
     // 주문 창에서 필요한 생성자
     @Builder
     public Delivery(Long addressId) {
         this.addressId = addressId;
         this.deliveryStatus = DeliveryStatus.PREPARE;
+        this.createdDate = LocalDateTime.now();
+        this.modifiedDate = LocalDateTime.now();
     }
 
     //== 비즈니스 로직 ==//

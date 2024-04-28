@@ -10,11 +10,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import com.orderservice.domain.dto.OrderStatusDto;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 import static com.orderservice.domain.common.ErrorCode.DELIVERY_ALEADY_START;
 import static com.orderservice.domain.common.ErrorCode.REFUND_IS_NOT_POSSIBLE;
@@ -36,12 +33,6 @@ public class Order {
     @Column(name = "total_price")
     private int totalPrice;
 
-    @Column(name = "user_id")
-    private Long userId;
-
-    @Column(name = "delivery_id")
-    private Long deliveryId;
-
     private LocalDateTime refundRequestDate;
 
     @Column(name = "created_date")
@@ -49,6 +40,12 @@ public class Order {
 
     @Column(name = "modified_date")
     private LocalDateTime modifiedDate;
+
+    @Column(name = "user_id")
+    private Long userId;
+
+    @Column(name = "delivery_id")
+    private Long deliveryId;
 
     //== 연관 관계 메서드 ==//
     public void mappingUserId(Long userId) {
@@ -95,6 +92,7 @@ public class Order {
         this.orderStatus = orderStatus;
     }
 
+    /** 총 비용을 매핑하는 메서드 **/
     public void mappingTotalPrice(int totalPrice) {
         this.totalPrice = totalPrice;
     }

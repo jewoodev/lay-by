@@ -1,13 +1,10 @@
 package com.orderservice.web.service.implement;
 
-import com.orderservice.domain.dto.OrderStatusDto;
-import com.orderservice.domain.dto.ResponseDto;
-import com.orderservice.domain.dto.WishItemDto;
-import com.orderservice.domain.dto.WishListDto;
+import com.orderservice.domain.dto.*;
 import com.orderservice.domain.entity.Delivery;
 import com.orderservice.domain.entity.Order;
 import com.orderservice.domain.entity.OrderItem;
-import com.orderservice.domain.vo.ItemStockAddRequest;
+import com.orderservice.domain.vo.ItemStockRequest;
 import com.orderservice.web.client.ItemServiceClient;
 import com.orderservice.domain.repository.OrderRepository;
 import com.orderservice.web.service.DeliveryService;
@@ -52,7 +49,7 @@ public class OrderServiceImpl implements OrderService {
 
         // Dto로 변환해서
         for (Order order : allByUser) {
-            Delivery delivery = deliveryService.findByOrderId(order.getOrderId());
+            Delivery delivery = deliveryService.findByDeliveryId(order.getDeliveryId());
             OrderStatusDto orderStatusDto = OrderStatusDto.convertToStatusDto(order, delivery.getDeliveryStatus());
             responseBody.add(orderStatusDto);
         }
@@ -69,18 +66,20 @@ public class OrderServiceImpl implements OrderService {
     @Override
     @Transactional
     public ResponseEntity<ResponseDto> cancelOrder(Long orderId) {
-        Delivery delivery = deliveryService.findByOrderId(orderId);
         Order order = findByOrderId(orderId);
+        Delivery delivery = deliveryService.findByDeliveryId(order.getDeliveryId());
         order.cancel(delivery); // 1.
 
         List<OrderItem> orderItems = orderItemService.findAllByOrderId(orderId);
 
-        List<ItemStockAddRequest> requests = new ArrayList<>();
+        List<ItemStockDto> itemStockDtos = new ArrayList<>();
         for (OrderItem orderItem : orderItems) {
-            requests.add(new ItemStockAddRequest(orderItem.getItemId(), orderItem.getCount()));
+            itemStockDtos.add(new ItemStockDto(orderItem.getItemId(), orderItem.getCount()));
         }
 
-        itemServiceClient.increaseStock(requests); // 2.
+        ItemStockDtoList itemStockDtoList = new ItemStockDtoList(itemStockDtos);
+
+        itemServiceClient.increaseStock(itemStockDtoList); // 2.
 
         return ResponseDto.success();
     }
@@ -108,22 +107,21 @@ public class OrderServiceImpl implements OrderService {
      3. 주문을 저장한다.
      */
     @Override
+    @Transactional
     public ResponseEntity<ResponseDto> purchaseWishList(Long userId, Long addressId, WishListDto wishListDto) {
 
         Long deliveryId = deliveryService.saveByAddressId(addressId);
         Order order = Order.createOrder(userId, deliveryId);
+        Long orderId = save(order);
         List<WishItemDto> wishItemDtos = wishListDto.getWishItemDtos();
         int totalPrice = 0;
 
         for (WishItemDto wishItemDto : wishItemDtos) {
             OrderItem orderItem = OrderItem.fromWishItemDto(wishItemDto);
-            orderItem.mappingOrder(order.getOrderId());
+            orderItem.mappingOrder(orderId);
             totalPrice += orderItem.getTotalPrice();
             orderItemService.save(orderItem);
         }
-
-        order.mappingTotalPrice(totalPrice);
-        save(order);
 
         return ResponseDto.success();
     }
@@ -133,5 +131,26 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.findAfterRefund();
     }
 
+    /**
+     Order에 포함되는 OrderItem의 totalPrice를 누적합 계산을 함으로써
+     Order의 totalPrice를 구하는 메서드
 
+     주문을 마친 후에는 주문 수량을 변경하는 논리는 존재할 수 없으므로 최초에만 계산한다.
+     */
+    @Override
+    @Transactional
+    public int getTotalPrice(Long orderId) {
+        Order order = findByOrderId(orderId);
+        int totalPrice = 0;
+
+        if (order.getTotalPrice() == 0) { // 아직 계산되지 않은 경우에만
+            List<OrderItem> orderItems = orderItemService.findAllByOrderId(orderId);
+            for (OrderItem orderItem : orderItems) {
+                totalPrice += orderItem.getTotalPrice();
+            } // 계산해서
+            order.mappingTotalPrice(totalPrice); // 결과를 저장해둔다. 즉, 각 Order당 계산 작업은 한 번만 수행한다.
+        }
+
+        return order.getTotalPrice();
+    }
 }

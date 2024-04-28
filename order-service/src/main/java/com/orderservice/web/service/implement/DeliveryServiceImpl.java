@@ -31,11 +31,6 @@ public class DeliveryServiceImpl implements DeliveryService {
     }
 
     @Override
-    public Delivery findByOrderId(Long orderId) {
-        return deliveryRepository.findByOrderId(orderId);
-    }
-
-    @Override
     public Delivery findByDeliveryId(Long deliveryId) {
         return deliveryRepository.findByDeliveryId(deliveryId);
     }

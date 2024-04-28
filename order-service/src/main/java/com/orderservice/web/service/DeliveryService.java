@@ -9,7 +9,5 @@ public interface DeliveryService {
 
     Long saveByAddressId(Long addressId);
 
-    Delivery findByOrderId(Long orderId);
-
     Delivery findByDeliveryId(Long deliveryId);
 }
