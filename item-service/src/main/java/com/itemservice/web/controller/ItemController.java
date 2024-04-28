@@ -1,13 +1,10 @@
 package com.itemservice.web.controller;
 
-import com.itemservice.domain.dto.ItemDto;
-import com.itemservice.domain.dto.ItemListDto;
-import com.itemservice.domain.dto.ResponseDto;
+import com.itemservice.domain.dto.*;
+import com.itemservice.domain.vo.ItemRequest;
 import com.itemservice.web.service.ItemService;
 import com.itemservice.web.service.WishItemService;
-import com.itemservice.domain.vo.ItemStockAddRequest;
 import com.itemservice.domain.vo.WishItemRequest;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -36,17 +33,27 @@ public class ItemController {
         return itemService.referItem(itemId);
     }
 
+    @PostMapping("/")
+    public ResponseEntity<ResponseDto> create(@RequestBody ItemRequest request) {
+        return itemService.saveItem(request);
+    }
+
     @PostMapping("/{item_id}/{user_id}")
     public ResponseEntity<ResponseDto> registerToWishlist(
             @PathVariable(name = "item_id") Long itemId,
             @PathVariable(name = "user_id") Long userId,
-            @RequestBody @Valid WishItemRequest request
+            @RequestBody WishItemRequest request
     ) {
         return wishItemService.register(itemId, userId, request);
     }
 
-    @PatchMapping("/{item_id}")
-    public ResponseEntity<ResponseDto> increaseStock(List<ItemStockAddRequest> requests) {
-        return itemService.increaseStock(requests);
+    @PutMapping("/ic")
+    public ResponseEntity<ResponseDto> increaseStock(ItemStockDtoList itemStockDtoList) {
+        return itemService.increaseStock(itemStockDtoList);
+    }
+
+    @PutMapping("/dc")
+    public ResponseEntity<ResponseDto> decreaseStock(List<ItemStockDto> requests) {
+        return itemService.decreaseStock(requests);
     }
 }

@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 @FeignClient(name = "order-service")
 public interface OrderServiceClient {
 
-    @PostMapping("/order-service/{user_id}")
+    @PostMapping("/{user_id}")
     ResponseEntity<ResponseDto> purchaseWishList(
             @PathVariable(name = "user_id") Long userId,
             @RequestParam Long addressId,
-            WishListDto wishItemDtos
+            @RequestBody WishListDto wishListDto
     );
 }

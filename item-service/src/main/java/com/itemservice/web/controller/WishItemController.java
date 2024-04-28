@@ -34,7 +34,7 @@ public class WishItemController {
     public ResponseEntity<ResponseDto> purchaseWishList(
             @PathVariable(name = "user_id") Long userId,
             @RequestBody AddressDto addressDto,
-            @RequestBody List<WishItemDto> dtos // 서
+            @RequestBody List<WishItemDto> dtos
     ) {
 
         return wishItemService.purchaseWishList(userId, addressDto, dtos);

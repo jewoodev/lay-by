@@ -16,10 +16,13 @@ import com.itemservice.web.service.WishItemService;
 import com.itemservice.domain.vo.WishItemRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -95,6 +98,7 @@ public class WishItemServiceImpl implements WishItemService {
 
         WishItem wishItem = WishItem.builder()
                 .itemId(itemId)
+                .itemName(item.getItemName())
                 .price(item.getPrice())
                 .count(request.getCount())
                 .userId(userId)
@@ -128,6 +132,11 @@ public class WishItemServiceImpl implements WishItemService {
     public ResponseEntity<ResponseDto> purchaseWishList(Long userId, AddressDto dto, List<WishItemDto> dtos) {
         WishListDto wishListDto = WishListDto.fromWishItemDtos(dtos);
         orderServiceClient.purchaseWishList(userId, dto.getAddressId(), wishListDto);
+
+        for (WishItemDto wishItemDto : dtos) {
+            wishItemRepository.deleteByWishItemId(wishItemDto.getWishItemId());
+        }
+
         return ResponseDto.success();
     }
 
@@ -142,11 +151,17 @@ public class WishItemServiceImpl implements WishItemService {
     public ResponseEntity<ResponseDto> purchaseWishListTest(Long userId) {
         List<WishItem> wishItems = wishItemRepository.findAllByUserId(userId);
         Long addressId = addressService.findAllByUserId(userId).get(0).getAddressId();
-        List<WishItemDto> wishItemDtos = new ArrayList<>();
 
         WishListDto wishListDto = WishListDto.fromWishItems(wishItems);
 
         orderServiceClient.purchaseWishList(userId, addressId, wishListDto);
+
+        for (WishItem wishItem : wishItems) {
+            Item item = itemService.findByItemId(wishItem.getItemId());
+            item.removeStock(wishItem.getCount());
+            wishItemRepository.delete(wishItem);
+        }
+
         return ResponseDto.success();
     }
 }

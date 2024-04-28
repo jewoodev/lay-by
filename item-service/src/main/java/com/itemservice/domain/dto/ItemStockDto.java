@@ -1,11 +1,11 @@
-package com.itemservice.domain.vo;
+package com.itemservice.domain.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class ItemStockAddRequest {
+public class ItemStockDto {
 
     private Long itemId;
 

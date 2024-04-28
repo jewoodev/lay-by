@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.itemservice.domain.common.ErrorCode.INTERNAL_SERVER_ERROR;
@@ -73,6 +74,8 @@ public class AddressServiceImpl implements AddressService {
                     .street(encodedStreet)
                     .zipCode(encodedZipCode)
                     .userId(userId)
+                    .createdDate(LocalDateTime.now())
+                    .modifiedDate(LocalDateTime.now())
                     .build();
 
         addressRepository.save(address);

@@ -1,13 +1,10 @@
 package com.itemservice.web.service.implement;
 
-import com.itemservice.domain.dto.ItemDto;
-import com.itemservice.domain.dto.ItemListDto;
-import com.itemservice.domain.dto.ResponseDto;
+import com.itemservice.domain.dto.*;
 import com.itemservice.domain.entity.Item;
 import com.itemservice.domain.repository.ItemRepository;
 import com.itemservice.web.service.ItemService;
 import com.itemservice.domain.vo.ItemRequest;
-import com.itemservice.domain.vo.ItemStockAddRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -69,10 +66,19 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional
-    public ResponseEntity<ResponseDto> increaseStock(List<ItemStockAddRequest> requests) {
-        for (ItemStockAddRequest request : requests) {
+    public ResponseEntity<ResponseDto> increaseStock(ItemStockDtoList itemStockDtoList) {
+        for (ItemStockDto request : itemStockDtoList.getItemStockDtos()) {
             Item item = itemRepository.findByItemId(request.getItemId());
             item.addStock(request.getCount());
+        }
+        return ResponseDto.success();
+    }
+
+    @Override
+    public ResponseEntity<ResponseDto> decreaseStock(List<ItemStockDto> requests) {
+        for (ItemStockDto request : requests) {
+            Item item = itemRepository.findByItemId(request.getItemId());
+            item.removeStock(request.getCount());
         }
         return ResponseDto.success();
     }
