@@ -13,8 +13,11 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+import static com.orderservice.domain.common.DeliveryStatus.*;
 import static com.orderservice.domain.common.ErrorCode.DELIVERY_ALEADY_START;
 import static com.orderservice.domain.common.ErrorCode.REFUND_IS_NOT_POSSIBLE;
+import static com.orderservice.domain.common.OrderStatus.*;
+import static com.orderservice.domain.common.OrderStatus.CANCEL;
 
 @Getter @Builder
 @AllArgsConstructor
@@ -56,7 +59,7 @@ public class Order {
     //== 생성 메서드 ==//
     public static Order createOrder(Long userId, Long deliveryId) {
         return Order.builder()
-                .orderStatus(OrderStatus.ORDER)
+                .orderStatus(ORDER)
                 .userId(userId)
                 .deliveryId(deliveryId)
                 .createdDate(LocalDateTime.now())
@@ -68,20 +71,16 @@ public class Order {
     //== 비즈니스 로직 ==//
     /** 주문 취소 **/
     public void cancel(Delivery delivery) {
-        DeliveryStatus deliveryStatus = delivery.checkStatus();
-        if (deliveryStatus == DeliveryStatus.PROCESS ||
-                deliveryStatus == DeliveryStatus.COMPLETE) {
-            throw new DeliveryCancelFailedException(DELIVERY_ALEADY_START.getMessage());
-        }
+        delivery.cancel();
 
-        this.orderStatus = OrderStatus.CANCEL;
+        this.orderStatus = CANCEL;
     }
 
     /** 환불 **/
     public void refund(Delivery delivery) {
         long pastDay = delivery.checkPastDay();
         if (pastDay <= 3 && pastDay >= 2) {
-            this.orderStatus = OrderStatus.REFUND_PROCESS;
+            this.orderStatus = REFUND_PROCESS;
             this.refundRequestDate = LocalDateTime.now();
         }
         else throw new RefundFailedException(REFUND_IS_NOT_POSSIBLE.getMessage());

@@ -7,7 +7,6 @@ import lombok.Data;
 @Data @Builder
 public class WishItemDto {
 
-    @JsonIgnore
     private Long wishItemId;
 
     private String itemName;
@@ -18,9 +17,7 @@ public class WishItemDto {
 
     private int totalPrice;
 
-    @JsonIgnore
     private Long itemId;
 
-    @JsonIgnore
     private Long userId;
 }

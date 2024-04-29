@@ -48,12 +48,12 @@ public class ItemController {
     }
 
     @PutMapping("/ic")
-    public ResponseEntity<ResponseDto> increaseStock(ItemStockDtoList itemStockDtoList) {
+    public ResponseEntity<ResponseDto> increaseStock(@RequestBody ItemStockDtoList itemStockDtoList) {
         return itemService.increaseStock(itemStockDtoList);
     }
 
     @PutMapping("/dc")
-    public ResponseEntity<ResponseDto> decreaseStock(List<ItemStockDto> requests) {
+    public ResponseEntity<ResponseDto> decreaseStock(@RequestBody List<ItemStockDto> requests) {
         return itemService.decreaseStock(requests);
     }
 }

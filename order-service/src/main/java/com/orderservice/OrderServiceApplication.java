@@ -1,6 +1,7 @@
 package com.orderservice;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import feign.Logger;
 import jakarta.persistence.EntityManager;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -18,5 +19,10 @@ public class OrderServiceApplication {
     @Bean
     JPAQueryFactory jpaQueryFactory(EntityManager entityManager) {
         return new JPAQueryFactory(entityManager);
+    }
+
+    @Bean
+    public Logger.Level feignLoggerLevel() {
+        return Logger.Level.FULL;
     }
 }

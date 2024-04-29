@@ -60,7 +60,8 @@ public class OrderServiceImpl implements OrderService {
 
     /**
      주문 취소 메서드.
-     1. 주문 취소가 가능한지 order에 지정된 delivery status를 확인해 판단하고 가능하면 상태를 취소로 바꾼 후
+     1. 주문 취소가 가능한지 order에 지정된 delivery status를 확인해 판단하고 가능하면
+     delivery와 order의 상태를 취소로 바꾼 후
      2. order-service에게 ItemStockAddRequest 를 보내서 재고를 증가시키게끔 통신한다.
      */
     @Override
@@ -69,7 +70,6 @@ public class OrderServiceImpl implements OrderService {
         Order order = findByOrderId(orderId);
         Delivery delivery = deliveryService.findByDeliveryId(order.getDeliveryId());
         order.cancel(delivery); // 1.
-
         List<OrderItem> orderItems = orderItemService.findAllByOrderId(orderId);
 
         List<ItemStockDto> itemStockDtos = new ArrayList<>();

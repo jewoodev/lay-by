@@ -1,6 +1,7 @@
 package com.orderservice.domain.entity;
 
 import com.orderservice.domain.common.DeliveryStatus;
+import com.orderservice.web.exception.DeliveryCancelFailedException;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,6 +10,9 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+
+import static com.orderservice.domain.common.DeliveryStatus.*;
+import static com.orderservice.domain.common.ErrorCode.DELIVERY_ALEADY_START;
 
 @Getter
 @AllArgsConstructor
@@ -37,7 +41,7 @@ public class Delivery {
     @Builder
     public Delivery(Long addressId) {
         this.addressId = addressId;
-        this.deliveryStatus = DeliveryStatus.PREPARE;
+        this.deliveryStatus = PREPARE;
         this.createdDate = LocalDateTime.now();
         this.modifiedDate = LocalDateTime.now();
     }
@@ -54,8 +58,8 @@ public class Delivery {
         LocalDateTime createdDate = getCreatedDate();
 
         long passDays = ChronoUnit.DAYS.between(now, createdDate);
-        if (passDays == 1L) updateStatus(DeliveryStatus.PROCESS);
-        else if (passDays > 1L) updateStatus(DeliveryStatus.COMPLETE);
+        if (passDays == 1L) updateStatus(PROCESS);
+        else if (passDays > 1L) updateStatus(COMPLETE);
 
         return this.deliveryStatus;
     }
@@ -67,5 +71,14 @@ public class Delivery {
 
         long passDays = ChronoUnit.DAYS.between(createdDate, now);
         return passDays;
+    }
+
+    /** Order가 취소될 때 사용될 배송 취소처리 메서드 **/
+    public void cancel() {
+        DeliveryStatus deliveryStatus = checkStatus();
+        if (deliveryStatus == PROCESS || deliveryStatus == COMPLETE) {
+            throw new DeliveryCancelFailedException(DELIVERY_ALEADY_START.getMessage());
+        }
+        this.deliveryStatus = CANCEL;
     }
 }

@@ -75,6 +75,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional
     public ResponseEntity<ResponseDto> decreaseStock(List<ItemStockDto> requests) {
         for (ItemStockDto request : requests) {
             Item item = itemRepository.findByItemId(request.getItemId());

@@ -1,10 +1,15 @@
 package com.itemservice.domain.dto;
 
-import lombok.Getter;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
-@Getter
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class ItemStockDtoList {
 
     List<ItemStockDto> itemStockDtos;
