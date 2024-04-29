@@ -2,9 +2,9 @@ package com.userservice.web.service.implement;
 
 import com.userservice.domain.common.RedisDao;
 import com.userservice.domain.dto.ResponseDto;
+import com.userservice.domain.dto.UserDto;
 import com.userservice.domain.dto.auth.TokenDto;
 import com.userservice.domain.entity.User;
-import com.userservice.domain.repository.UserRepository;
 import com.userservice.domain.vo.auth.*;
 import com.userservice.web.exception.*;
 import com.userservice.web.provider.EmailProvider;
@@ -24,7 +24,6 @@ import com.userservice.web.service.AuthService;
 
 import static com.userservice.domain.common.ErrorCode.*;
 import static com.userservice.domain.common.ErrorCode.INTERNAL_SERVER_ERROR;
-import static org.springframework.http.HttpStatus.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -150,28 +149,30 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     @Transactional
-    public ResponseEntity<ResponseDto> signUp(SignUpRequest dto) {
+    public ResponseEntity<ResponseDto> signUp(SignUpRequest vo) {
+
+        UserDto userDto = new UserDto();
 
         try {
-            String username = dto.getUsername();
+            String username = vo.getUsername();
             boolean isExist = userService.existsByUsername(username);
             if (isExist) throw new DuplicatedUsernameException(DUPLICATED_USERNAME.getMessage());
             String encodedUsername = personalDataEncoder.encode(username);
-            dto.setUsername(encodedUsername);
+            userDto.setUsername(encodedUsername);
 
-            String password = dto.getPassword();
+            String password = vo.getPassword();
             String encodedPassword= passwordEncoder.encode(password);
-            dto.setPassword(encodedPassword);
+            userDto.setPassword(encodedPassword);
 
-            String email = dto.getEmail();
+            String email = vo.getEmail();
             String encodedEmail = personalDataEncoder.encode(email);
-            dto.setEmail(encodedEmail);
+            userDto.setEmail(encodedEmail);
 
-            String phoneNumber = dto.getPhoneNumber();
+            String phoneNumber = vo.getPhoneNumber();
             String encodedPhoneNumber = personalDataEncoder.encode(phoneNumber);
-            dto.setPhoneNumber(encodedPhoneNumber);
+            userDto.setPhoneNumber(encodedPhoneNumber);
 
-            User user = User.forSignIn(dto);
+            User user = User.fromDto(userDto);
             userService.save(user);
 
         } catch (Exception e) {
@@ -188,11 +189,12 @@ public class AuthServiceImpl implements AuthService {
 
         String token = null;
         String encodedUsername = null;
+        User user = null;
 
         try {
             String username = dto.getUsername();
             encodedUsername = personalDataEncoder.encode(username);
-            User user = userService.findByUsername(encodedUsername);
+            user = userService.findByUsername(encodedUsername);
             if (user == null) throw new SignInFailedException(SIGN_IN_FAIL.getMessage());
 
             String password = dto.getPassword();
@@ -207,8 +209,8 @@ public class AuthServiceImpl implements AuthService {
             throw new InternalServerErrorException(INTERNAL_SERVER_ERROR.getMessage());
         }
 
-        redisDao.setValue("JWT_TOKEN:" + encodedUsername, token, Duration.ofMillis(60 * 60 * 1000L));
-        TokenDto tokenDto = new TokenDto(token);
+        redisDao.setValue("JWT_TOKEN:" + encodedUsername, token, Duration.ofMillis(60 * 60 * 1000));
+        TokenDto tokenDto = new TokenDto(token, user.getUuid());
 
         return tokenDto;
     }

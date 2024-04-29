@@ -1,9 +1,7 @@
 package com.userservice.web.handler;
 
 import com.userservice.domain.dto.ErrorDto;
-import com.userservice.web.exception.AES256Exception;
-import com.userservice.web.exception.DatabaseErrorException;
-import com.userservice.web.exception.InternalServerErrorException;
+import com.userservice.web.exception.*;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -33,26 +31,18 @@ public class RestResponseExceptionHandler extends ResponseEntityExceptionHandler
         return new ErrorDto(FORBIDDEN.value(), ex.getMessage());
     }
 
-//    @ResponseStatus(UNAUTHORIZED)
-//    @ExceptionHandler(value = { SignInFailedException.class, CertificationFailedException.class })
-//    @ResponseBody
-//    protected ErrorDto unauthorized(RuntimeException ex, WebRequest request) {
-//        return new ErrorDto(UNAUTHORIZED.value(), ex.getMessage());
-//    }
+    @ResponseStatus(UNAUTHORIZED)
+    @ExceptionHandler(value = { SignInFailedException.class, CertificationFailedException.class })
+    @ResponseBody
+    protected ErrorDto unauthorized(RuntimeException ex, WebRequest request) {
+        return new ErrorDto(UNAUTHORIZED.value(), ex.getMessage());
+    }
 
 
-//    @ResponseStatus(BAD_REQUEST)
-//    @ExceptionHandler(value = { DuplicatedUsernameException.class, MailFailedException.class })
-//    @ResponseBody
-//    protected ErrorDto badRequest(RuntimeException ex, WebRequest request) {
-//        return new ErrorDto(BAD_REQUEST.value(), ex.getMessage());
-//    }
-
-//    @ResponseStatus(CONFLICT)
-//    @ExceptionHandler(value = { NotEnoughStockException.class, DeliveryCancelFailedException.class,
-//            RefundFailedException.class, NotEnoughStockException.class, DeliveryCancelFailedException.class })
-//    @ResponseBody
-//    protected ErrorDto conflict(RuntimeException ex, WebRequest request) {
-//        return new ErrorDto(CONFLICT.value(), ex.getMessage());
-//    }
+    @ResponseStatus(BAD_REQUEST)
+    @ExceptionHandler(value = { DuplicatedUsernameException.class, MailFailedException.class })
+    @ResponseBody
+    protected ErrorDto badRequest(RuntimeException ex, WebRequest request) {
+        return new ErrorDto(BAD_REQUEST.value(), ex.getMessage());
+    }
 }

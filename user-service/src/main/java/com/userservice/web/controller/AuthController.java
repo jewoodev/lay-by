@@ -53,6 +53,8 @@ public class AuthController {
     ) {
         TokenDto tokenDto = authService.signIn(requestBody);
         response.addHeader("Authorization", tokenDto.getToken());
+        response.addHeader("uuid", tokenDto.getUuid());
+
         return ResponseDto.success();
     }
 
