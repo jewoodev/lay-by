@@ -1,16 +1,50 @@
 version: '3'
 services:
-  mysql-primary-0:
+  user-service:
     image: mysql:8.0.35
     platform: linux/x86_64
     restart: always
     volumes:
-      - ./db/mysql/data:/var/lib/mysql
-      - ./db/mysql/config:/etc/mysql/conf.d
-      - ./db/mysql/init:/docker-entrypoint-initdb.d
-    container_name: mysql-primary-0
+      - ./db/user-service/data:/var/lib/mysql
+      - ./db/user-service/config:/etc/mysql/conf.d
+      - ./db/user-service/init:/docker-entrypoint-initdb.d
+    container_name: user-service
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: my1234
+      TZ: Asia/Seoul
+      MYSQL_USER: jewoo
+      MYSQL_PASSWORD: 1234
+
+  order-service:
+    image: mysql:8.0.35
+    platform: linux/x86_64
+    restart: always
+    volumes:
+      - ./db/order-service/data:/var/lib/mysql
+      - ./db/order-service/config:/etc/mysql/conf.d
+      - ./db/order-service/init:/docker-entrypoint-initdb.d
+    container_name: order-service
     ports:
       - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: my1234
+      TZ: Asia/Seoul
+      MYSQL_USER: jewoo
+      MYSQL_PASSWORD: 1234
+
+  item-service:
+    image: mysql:8.0.35
+    platform: linux/x86_64
+    restart: always
+    volumes:
+      - ./db/item-service/data:/var/lib/mysql
+      - ./db/item-service/config:/etc/mysql/conf.d
+      - ./db/item-service/init:/docker-entrypoint-initdb.d
+    container_name: item-service
+    ports:
+      - "3308:3306"
     environment:
       MYSQL_ROOT_PASSWORD: my1234
       TZ: Asia/Seoul
