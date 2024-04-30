@@ -1,0 +1,6 @@
+rootProject.name = 'lay-by'
+include 'api-gateway-service'
+include 'discovery-service'
+include 'item-service'
+include 'order-service'
+include 'user-service'
