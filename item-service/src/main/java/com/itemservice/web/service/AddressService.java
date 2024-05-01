@@ -3,7 +3,7 @@ package com.itemservice.web.service;
 import com.itemservice.domain.dto.AddressListDto;
 import com.itemservice.domain.dto.ResponseDto;
 import com.itemservice.domain.entity.Address;
-import com.itemservice.domain.vo.AddressRequest;
+import com.itemservice.domain.vo.request.AddressRequest;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;

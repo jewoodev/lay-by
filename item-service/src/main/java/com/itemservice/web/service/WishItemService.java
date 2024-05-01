@@ -5,7 +5,7 @@ import com.itemservice.domain.dto.ResponseDto;
 import com.itemservice.domain.dto.WishItemDto;
 import com.itemservice.domain.dto.WishListDto;
 import com.itemservice.domain.entity.WishItem;
-import com.itemservice.domain.vo.WishItemRequest;
+import com.itemservice.domain.vo.request.WishItemRequest;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
