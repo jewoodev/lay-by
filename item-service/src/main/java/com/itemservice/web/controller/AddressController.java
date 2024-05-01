@@ -2,7 +2,7 @@ package com.itemservice.web.controller;
 
 import com.itemservice.domain.dto.AddressListDto;
 import com.itemservice.domain.dto.ResponseDto;
-import com.itemservice.domain.vo.AddressRequest;
+import com.itemservice.domain.vo.request.AddressRequest;
 import com.itemservice.web.service.AddressService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

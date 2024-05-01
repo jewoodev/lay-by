@@ -2,7 +2,9 @@ package com.itemservice.web.service;
 
 import com.itemservice.domain.dto.*;
 import com.itemservice.domain.entity.Item;
-import com.itemservice.domain.vo.ItemRequest;
+import com.itemservice.domain.vo.request.ItemRequest;
+import com.itemservice.domain.vo.request.ItemStockControlRequests;
+import com.itemservice.domain.vo.response.ItemStockResponse;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
@@ -19,7 +21,9 @@ public interface ItemService {
 
     ResponseEntity<ItemDto> referItem(Long itemId);
 
-    ResponseEntity<ResponseDto> increaseStock(ItemStockDtoList itemStockDtoList);
+    ResponseEntity<ItemStockResponse> referStock(Long itemId);
 
-    ResponseEntity<ResponseDto> decreaseStock(List<ItemStockDto> requests);
+    ResponseEntity<ResponseDto> increaseStock(ItemStockControlRequests itemStockControlRequests);
+
+//    ResponseEntity<ResponseDto> decreaseStock(List<ItemStockDto> requests);
 }

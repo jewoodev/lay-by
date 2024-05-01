@@ -4,7 +4,6 @@ import com.itemservice.domain.dto.AddressDto;
 import com.itemservice.domain.dto.ResponseDto;
 import com.itemservice.domain.dto.WishItemDto;
 import com.itemservice.domain.dto.WishListDto;
-import com.itemservice.domain.entity.Address;
 import com.itemservice.domain.entity.Item;
 import com.itemservice.domain.entity.WishItem;
 import com.itemservice.web.client.OrderServiceClient;
@@ -13,18 +12,13 @@ import com.itemservice.domain.repository.WishItemRepository;
 import com.itemservice.web.service.AddressService;
 import com.itemservice.web.service.ItemService;
 import com.itemservice.web.service.WishItemService;
-import com.itemservice.domain.vo.WishItemRequest;
+import com.itemservice.domain.vo.request.WishItemRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.itemservice.domain.common.ErrorCode.DATABASE_ERROR;

@@ -1,4 +1,4 @@
-package com.itemservice.domain.vo;
+package com.itemservice.domain.vo.request;
 
 import lombok.Getter;
 
