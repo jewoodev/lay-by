@@ -1,10 +1,12 @@
 package com.itemservice.web.controller;
 
 import com.itemservice.domain.dto.*;
-import com.itemservice.domain.vo.ItemRequest;
+import com.itemservice.domain.vo.request.ItemRequest;
+import com.itemservice.domain.vo.request.ItemStockControlRequests;
+import com.itemservice.domain.vo.request.WishItemRequest;
+import com.itemservice.domain.vo.response.ItemStockResponse;
 import com.itemservice.web.service.ItemService;
 import com.itemservice.web.service.WishItemService;
-import com.itemservice.domain.vo.WishItemRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +35,13 @@ public class ItemController {
         return itemService.referItem(itemId);
     }
 
+    @GetMapping("/{item_id}/stock")
+    public ResponseEntity<ItemStockResponse> referItemsStock(
+            @PathVariable(name = "item_id") Long itemId
+    ) {
+        return itemService.referStock(itemId);
+    }
+
     @PostMapping("/")
     public ResponseEntity<ResponseDto> create(@RequestBody ItemRequest request) {
         return itemService.saveItem(request);
@@ -48,12 +57,12 @@ public class ItemController {
     }
 
     @PutMapping("/ic")
-    public ResponseEntity<ResponseDto> increaseStock(@RequestBody ItemStockDtoList itemStockDtoList) {
-        return itemService.increaseStock(itemStockDtoList);
+    public ResponseEntity<ResponseDto> increaseStock(@RequestBody ItemStockControlRequests itemStockControlRequests) {
+        return itemService.increaseStock(itemStockControlRequests);
     }
 
-    @PutMapping("/dc")
-    public ResponseEntity<ResponseDto> decreaseStock(@RequestBody List<ItemStockDto> requests) {
-        return itemService.decreaseStock(requests);
-    }
+//    @PutMapping("/dc")
+//    public ResponseEntity<ResponseDto> decreaseStock(@RequestBody List<ItemStockDto> requests) {
+//        return itemService.decreaseStock(requests);
+//    }
 }

@@ -4,7 +4,7 @@ import com.itemservice.domain.dto.AddressListDto;
 import com.itemservice.domain.dto.ResponseDto;
 import com.itemservice.domain.entity.Address;
 import com.itemservice.domain.repository.AddressRepository;
-import com.itemservice.domain.vo.AddressRequest;
+import com.itemservice.domain.vo.request.AddressRequest;
 import com.itemservice.web.service.AddressService;
 import com.itemservice.web.util.PersonalDataEncoder;
 import jakarta.ws.rs.InternalServerErrorException;

@@ -1,0 +1,30 @@
+config:
+  target: 'http://localhost:8083'
+  phases:
+    - duration: 10
+      arrivalRate: 3
+      name: Warm up
+
+    - duration: 10
+      arrivalRate: 3
+      rampTo: 9
+      name: Ramp up load
+
+#    - duration: 10
+#      arrivalRate: 10
+#      name: Sustained load
+
+    - duration: 10
+      arrivalRate: 9
+      rampTo: 3
+      name: End of load
+
+scenarios:
+  - name: "Register item to wishlist and make order from it"
+    flow:
+      - post:
+          url: "/item/1/1"
+          json:
+            count: 10
+      - post:
+          url: "/wish-item/1/test"
