@@ -55,7 +55,6 @@ public class Order {
         this.userId = userId;
     }
 
-
     //== 생성 메서드 ==//
     public static Order createOrder(Long userId, Long deliveryId) {
         return Order.builder()
@@ -69,26 +68,29 @@ public class Order {
 
 
     //== 비즈니스 로직 ==//
+    /** 상태 업데이트 **/
+    public void updateStatus(OrderStatus orderStatus) {
+        this.orderStatus = orderStatus;
+    }
+
     /** 주문 취소 **/
     public void cancel(Delivery delivery) {
-        delivery.cancel();
+        DeliveryStatus deliveryStatus = delivery.checkStatus();
+        if (deliveryStatus == PROCESS || deliveryStatus == COMPLETE) {
+            throw new DeliveryCancelFailedException(DELIVERY_ALEADY_START.getMessage());
+        }
 
-        this.orderStatus = CANCEL;
+        updateStatus(CANCEL);
     }
 
     /** 환불 **/
     public void refund(Delivery delivery) {
         long pastDay = delivery.checkPastDay();
         if (pastDay <= 3 && pastDay >= 2) {
-            this.orderStatus = REFUND_PROCESS;
+            updateStatus(REFUND_PROCESS);
             this.refundRequestDate = LocalDateTime.now();
         }
         else throw new RefundFailedException(REFUND_IS_NOT_POSSIBLE.getMessage());
-    }
-
-    /** 상태 업데이트 **/
-    public void updateStatus(OrderStatus orderStatus) {
-        this.orderStatus = orderStatus;
     }
 
     /** 총 비용을 매핑하는 메서드 **/

@@ -70,6 +70,7 @@ public class OrderServiceImpl implements OrderService {
         Order order = findByOrderId(orderId);
         Delivery delivery = deliveryService.findByDeliveryId(order.getDeliveryId());
         order.cancel(delivery); // 1.
+        delivery.cancel(); // 1.
         List<OrderItem> orderItems = orderItemService.findAllByOrderId(orderId);
 
         List<ItemStockDto> itemStockDtos = new ArrayList<>();
@@ -96,6 +97,7 @@ public class OrderServiceImpl implements OrderService {
         Order order = orderRepository.findByOrderId(orderId);
         Delivery delivery = deliveryService.findByDeliveryId(order.getDeliveryId());
         order.refund(delivery);
+        delivery.refundSucceed();
 
         return ResponseDto.success();
     }

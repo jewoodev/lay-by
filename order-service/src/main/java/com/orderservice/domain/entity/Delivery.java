@@ -75,10 +75,11 @@ public class Delivery {
 
     /** Order가 취소될 때 사용될 배송 취소처리 메서드 **/
     public void cancel() {
-        DeliveryStatus deliveryStatus = checkStatus();
-        if (deliveryStatus == PROCESS || deliveryStatus == COMPLETE) {
-            throw new DeliveryCancelFailedException(DELIVERY_ALEADY_START.getMessage());
-        }
-        this.deliveryStatus = CANCEL;
+        updateStatus(CANCEL);
+    }
+
+    /** Order가 반품 처리에 성공했을 때 배송 상태 처리 메서드 **/
+    public void refundSucceed() {
+        updateStatus(RETURN_PROCESS);
     }
 }
