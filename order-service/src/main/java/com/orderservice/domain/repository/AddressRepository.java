@@ -1,6 +1,6 @@
-package com.itemservice.domain.repository;
+package com.orderservice.domain.repository;
 
-import com.itemservice.domain.entity.Address;
+import com.orderservice.domain.entity.Address;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

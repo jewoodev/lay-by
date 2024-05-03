@@ -1,4 +1,4 @@
-package com.itemservice.domain.vo.request;
+package com.orderservice.domain.vo;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;

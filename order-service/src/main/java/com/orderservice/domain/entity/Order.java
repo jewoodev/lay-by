@@ -55,12 +55,15 @@ public class Order {
         this.userId = userId;
     }
 
+    public void mappingDeliveryId(Long deliveryId) {
+        this.deliveryId = deliveryId;
+    }
+
     //== 생성 메서드 ==//
-    public static Order createOrder(Long userId, Long deliveryId) {
+    public static Order createOrder(Long userId) {
         return Order.builder()
-                .orderStatus(ORDER)
+                .orderStatus(NOT_PURCHASE)
                 .userId(userId)
-                .deliveryId(deliveryId)
                 .createdDate(LocalDateTime.now())
                 .modifiedDate(LocalDateTime.now())
                 .build();
@@ -71,6 +74,7 @@ public class Order {
     /** 상태 업데이트 **/
     public void updateStatus(OrderStatus orderStatus) {
         this.orderStatus = orderStatus;
+        this.modifiedDate = LocalDateTime.now();
     }
 
     /** 주문 취소 **/
@@ -81,6 +85,7 @@ public class Order {
         }
 
         updateStatus(CANCEL);
+        this.modifiedDate = LocalDateTime.now();
     }
 
     /** 환불 **/
@@ -89,6 +94,7 @@ public class Order {
         if (pastDay <= 3 && pastDay >= 2) {
             updateStatus(REFUND_PROCESS);
             this.refundRequestDate = LocalDateTime.now();
+            this.modifiedDate = LocalDateTime.now();
         }
         else throw new RefundFailedException(REFUND_IS_NOT_POSSIBLE.getMessage());
     }

@@ -10,6 +10,7 @@ public enum DeliveryStatus {
     PROCESS("배송 중"),
     COMPLETE("배송 완료"),
     CANCEL("배송 취소"),
+
     RETURN_PROCESS("반품 상품 수거 중"),
     RETURN_COMPLETE("판매자에게 도착");
 
