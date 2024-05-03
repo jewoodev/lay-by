@@ -4,14 +4,12 @@ import com.orderservice.domain.dto.*;
 import com.orderservice.domain.entity.Delivery;
 import com.orderservice.domain.entity.Order;
 import com.orderservice.domain.entity.OrderItem;
-import com.orderservice.domain.vo.ItemStockRequest;
 import com.orderservice.web.client.ItemServiceClient;
 import com.orderservice.domain.repository.OrderRepository;
 import com.orderservice.web.service.DeliveryService;
 import com.orderservice.web.service.OrderItemService;
 import com.orderservice.web.service.OrderService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +17,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+
+import static com.orderservice.domain.common.OrderStatus.*;
+import static org.springframework.http.HttpStatus.*;
 
 @Service
 @RequiredArgsConstructor
@@ -55,7 +57,7 @@ public class OrderServiceImpl implements OrderService {
         }
 
         // 반환한다.
-        return ResponseEntity.status(HttpStatus.OK).body(responseBody);
+        return ResponseEntity.status(OK).body(responseBody);
     }
 
     /**
@@ -103,31 +105,31 @@ public class OrderServiceImpl implements OrderService {
     }
 
     /**
-     purchaseWishList 흐름
+     makeOrder 흐름
      1. item-service가 넘겨준 주문 정보로 주문을 생성한다.
      2. 넘겨받은 위시리스트에 담긴 상품 정보로 OrderItem을 만들고, 각각 1.에서 생성한 주문과 매핑하여 저장한다.
      3. 주문을 저장한다.
      */
     @Override
     @Transactional
-    public ResponseEntity<ResponseDto> purchaseWishList(Long userId, Long addressId, WishListDto wishListDto) {
+    public ResponseEntity<ResponseDto> makeOrder(Long userId, WishListDto wishListDto) {
 
-        Long deliveryId = deliveryService.saveByAddressId(addressId);
-        Order order = Order.createOrder(userId, deliveryId);
+        Order order = Order.createOrder(userId);
         Long orderId = save(order);
         List<WishItemDto> wishItemDtos = wishListDto.getWishItemDtos();
-        int totalPrice = 0;
 
         for (WishItemDto wishItemDto : wishItemDtos) {
             OrderItem orderItem = OrderItem.fromWishItemDto(wishItemDto);
             orderItem.mappingOrder(orderId);
-            totalPrice += orderItem.getTotalPrice();
             orderItemService.save(orderItem);
         }
 
         return ResponseDto.success();
     }
 
+    /**
+     "반품 처리 중" 상태인 Order를 조회하는 메서드
+     */
     @Override
     public List<Order> findAfterRefund() {
         return orderRepository.findAfterRefund();
@@ -154,5 +156,22 @@ public class OrderServiceImpl implements OrderService {
         }
 
         return order.getTotalPrice();
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<String> purchaseOrder(Long orderId, Long deliveryId) {
+        // 결제 화면에서의 실패 시나리오
+        if (new Random().nextInt(100) < 20) {
+            return ResponseEntity.status(PAYMENT_REQUIRED).body("고객 변심 이탈.");
+        } else if (new Random().nextInt(100) < 20) {
+            return ResponseEntity.status(INTERNAL_SERVER_ERROR).body("결제 실패 이탈.");
+        }
+
+        Order order = findByOrderId(orderId);
+        order.updateStatus(PURCHASE);
+        order.mappingDeliveryId(deliveryId);
+
+        return ResponseEntity.status(OK).body("결제가 성공적으로 완료되었습니다.");
     }
 }

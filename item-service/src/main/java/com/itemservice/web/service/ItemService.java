@@ -23,7 +23,7 @@ public interface ItemService {
 
     ResponseEntity<ItemStockResponse> referStock(Long itemId);
 
-    ResponseEntity<ResponseDto> increaseStock(ItemStockControlRequests itemStockControlRequests);
+    ResponseEntity<ResponseDto> increaseStock(ItemStockControlRequests requests);
 
-//    ResponseEntity<ResponseDto> decreaseStock(List<ItemStockDto> requests);
+    void decreaseStock(ItemStockControlRequests requests);
 }

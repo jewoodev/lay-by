@@ -84,13 +84,12 @@ public class ItemServiceImpl implements ItemService {
         return ResponseDto.success();
     }
 
-//    @Override
-//    @Transactional
-//    public ResponseEntity<ResponseDto> decreaseStock(List<ItemStockDto> requests) {
-//        for (ItemStockDto request : requests) {
-//            Item item = itemRepository.findByItemId(request.getItemId());
-//            item.removeStock(request.getCount());
-//        }
-//        return ResponseDto.success();
-//    }
+    @Override
+    @Transactional
+    public void decreaseStock(ItemStockControlRequests requests) {
+        for (ItemStockControlRequest itemStockControlRequest : requests.getItemStockControlRequests()) {
+            Item item = itemRepository.findByItemId(itemStockControlRequest.getItemId());
+            item.removeStock(itemStockControlRequest.getCount());
+        }
+    }
 }

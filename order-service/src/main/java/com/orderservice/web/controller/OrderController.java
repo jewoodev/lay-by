@@ -19,6 +19,9 @@ public class OrderController {
 
     private final OrderService orderService;
 
+    /**
+     사용자의 주문했던 Order 들의 상태를 조회하는 API
+     */
     @GetMapping("/{user_id}/all")
     public ResponseEntity<List<OrderStatusDto>> referOrdersStatus(
             @PathVariable(name = "user_id") Long userId
@@ -26,15 +29,31 @@ public class OrderController {
         return orderService.referOrdersStatus(userId);
     }
 
+    /**
+     전달 받은 위시리스트로 주문을 생성하는 API
+     */
     @PostMapping("/{user_id}")
-    public ResponseEntity<ResponseDto> purchaseWishList(
+    public ResponseEntity<ResponseDto> makeOrder(
             @PathVariable(name = "user_id") Long userId,
-            @RequestParam Long addressId,
             @RequestBody WishListDto wishListDto
     ) {
-        return orderService.purchaseWishList(userId, addressId, wishListDto);
+        return orderService.makeOrder(userId, wishListDto);
     }
 
+    /**
+     결제 페이지에서 주소를 선택한 후 최종적으로 호출하는 결제 API
+     */
+    @PatchMapping("/{order_id}")
+    public ResponseEntity<String> purchaseOrder(
+            @PathVariable(name = "order_id") Long orderId,
+            @RequestParam Long deliveryId
+    ) {
+        return orderService.purchaseOrder(orderId, deliveryId);
+    }
+
+    /**
+     주문을 취소하는 API
+     */
     @PutMapping("/{user_id}/{order_id}/cancel")
     public ResponseEntity<ResponseDto> cancelOrder(
             @PathVariable(name = "order_id") Long orderId
@@ -42,6 +61,9 @@ public class OrderController {
         return orderService.cancelOrder(orderId);
     }
 
+    /**
+     주문을 환불하는 API
+     */
     @PutMapping("/{order_id}/refund")
     public ResponseEntity<ResponseDto> refundOrder(
             @PathVariable(name = "order_id") Long orderId

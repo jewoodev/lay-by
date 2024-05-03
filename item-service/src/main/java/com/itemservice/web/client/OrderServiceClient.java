@@ -2,9 +2,7 @@ package com.itemservice.web.client;
 
 import com.itemservice.domain.dto.ResponseDto;
 import com.itemservice.domain.dto.WishListDto;
-import com.itemservice.web.exception.RetryException;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
-import io.github.resilience4j.retry.annotation.Retry;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,9 +13,8 @@ import static org.springframework.http.HttpStatus.*;
 public interface OrderServiceClient {
 
     @PostMapping("/order/{user_id}")
-    ResponseEntity<ResponseDto> purchaseWishList(
+    ResponseEntity<ResponseDto> makeOrder(
             @PathVariable(name = "user_id") Long userId,
-            @RequestParam Long addressId,
             @RequestBody WishListDto wishListDto
     );
 

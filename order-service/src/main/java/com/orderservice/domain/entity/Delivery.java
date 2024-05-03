@@ -50,6 +50,7 @@ public class Delivery {
     /** 배송 상태 업데이트하는 메서드 **/
     public void updateStatus(DeliveryStatus status) {
         this.deliveryStatus = status;
+        this.modifiedDate = LocalDateTime.now();
     }
 
     /** 날짜를 체크해 배송 상태를 업데이트하는 메서드 **/
