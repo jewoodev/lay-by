@@ -1,6 +1,6 @@
-package com.itemservice.domain.dto;
+package com.orderservice.domain.dto;
 
-import com.itemservice.domain.entity.Address;
+import com.orderservice.domain.entity.Address;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,7 +17,7 @@ public class AddressListDto {
     public AddressListDto(List<Address> addressList) {
 
         for (Address address : addressList) {
-            AddressDto addressDto = new AddressDto(address);
+            AddressDto addressDto = AddressDto.fromAddress(address);
             this.addressDtos.add(addressDto);
         }
     }

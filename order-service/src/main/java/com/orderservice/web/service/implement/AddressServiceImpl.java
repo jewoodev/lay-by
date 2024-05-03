@@ -1,12 +1,12 @@
-package com.itemservice.web.service.implement;
+package com.orderservice.web.service.implement;
 
-import com.itemservice.domain.dto.AddressListDto;
-import com.itemservice.domain.dto.ResponseDto;
-import com.itemservice.domain.entity.Address;
-import com.itemservice.domain.repository.AddressRepository;
-import com.itemservice.domain.vo.request.AddressRequest;
-import com.itemservice.web.service.AddressService;
-import com.itemservice.web.util.PersonalDataEncoder;
+import com.orderservice.domain.dto.AddressListDto;
+import com.orderservice.domain.dto.ResponseDto;
+import com.orderservice.domain.entity.Address;
+import com.orderservice.domain.repository.AddressRepository;
+import com.orderservice.domain.vo.AddressRequest;
+import com.orderservice.web.service.AddressService;
+import com.orderservice.web.util.PersonalDataEncoder;
 import jakarta.ws.rs.InternalServerErrorException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static com.itemservice.domain.common.ErrorCode.INTERNAL_SERVER_ERROR;
+import static com.orderservice.domain.common.ErrorCode.INTERNAL_SERVER_ERROR;
 
 
 @Slf4j

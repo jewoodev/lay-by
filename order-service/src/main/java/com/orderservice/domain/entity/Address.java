@@ -1,6 +1,6 @@
-package com.itemservice.domain.entity;
+package com.orderservice.domain.entity;
 
-import com.itemservice.domain.vo.request.AddressRequest;
+import com.orderservice.domain.vo.AddressRequest;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

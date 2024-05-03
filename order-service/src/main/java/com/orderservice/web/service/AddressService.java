@@ -1,9 +1,9 @@
-package com.itemservice.web.service;
+package com.orderservice.web.service;
 
-import com.itemservice.domain.dto.AddressListDto;
-import com.itemservice.domain.dto.ResponseDto;
-import com.itemservice.domain.entity.Address;
-import com.itemservice.domain.vo.request.AddressRequest;
+import com.orderservice.domain.dto.AddressListDto;
+import com.orderservice.domain.dto.ResponseDto;
+import com.orderservice.domain.entity.Address;
+import com.orderservice.domain.vo.AddressRequest;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
