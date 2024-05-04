@@ -1,8 +1,7 @@
 package com.itemservice.domain.entity;
 
-import com.itemservice.domain.common.ErrorCode;
 import com.itemservice.web.exception.NotEnoughStockException;
-import com.itemservice.domain.vo.ItemRequest;
+import com.itemservice.domain.vo.request.ItemRequest;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

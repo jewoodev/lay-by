@@ -24,19 +24,19 @@ public class ErrorfulController {
 
     private final OrderServiceClient orderServiceClient;
 
-    @GetMapping("/test-case1")
-    public ResponseEntity<String> case1() {
-        return orderServiceClient.case1();
-    }
+//    @GetMapping("/test-case1")
+//    public ResponseEntity<String> case1() {
+//        return orderServiceClient.case1();
+//    }
 
-    @GetMapping("/test-case2")
-    public ResponseEntity<String> case2() {
-        return orderServiceClient.case2();
-    }
-
-    @GetMapping("/test-case3")
-    public ResponseEntity<String> case3() {
-        return orderServiceClient.case3();
-    }
+//    @GetMapping("/test-case2")
+//    public ResponseEntity<String> case2() {
+//        return orderServiceClient.case2();
+//    }
+//
+//    @GetMapping("/test-case3")
+//    public ResponseEntity<String> case3() {
+//        return orderServiceClient.case3();
+//    }
 
 }

@@ -1,30 +1,23 @@
 package com.itemservice.web.service.implement;
 
-import com.itemservice.domain.dto.AddressDto;
 import com.itemservice.domain.dto.ResponseDto;
 import com.itemservice.domain.dto.WishItemDto;
 import com.itemservice.domain.dto.WishListDto;
-import com.itemservice.domain.entity.Address;
 import com.itemservice.domain.entity.Item;
 import com.itemservice.domain.entity.WishItem;
+import com.itemservice.domain.vo.request.ItemStockControlRequests;
 import com.itemservice.web.client.OrderServiceClient;
 import com.itemservice.web.exception.DatabaseErrorException;
 import com.itemservice.domain.repository.WishItemRepository;
-import com.itemservice.web.service.AddressService;
 import com.itemservice.web.service.ItemService;
 import com.itemservice.web.service.WishItemService;
-import com.itemservice.domain.vo.WishItemRequest;
+import com.itemservice.domain.vo.request.WishItemRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.itemservice.domain.common.ErrorCode.DATABASE_ERROR;
@@ -38,7 +31,6 @@ public class WishItemServiceImpl implements WishItemService {
 
     private final WishItemRepository wishItemRepository;
     private final ItemService itemService;
-    private final AddressService addressService;
     private final OrderServiceClient orderServiceClient;
 
     @Override
@@ -122,43 +114,51 @@ public class WishItemServiceImpl implements WishItemService {
     }
 
     /**
-     purchaseWishList 흐름
-     1. 클라이언트가 위시리스트에서 구매할 위시 아이템을 고른 후 결제 창으로 넘어간다.
-     2. 결제창에서 이번에 배송받을 주소 정보를 선택한다.
-     3. 만든 주문 정보를 order-service에 넘겨준다.
+     chooseForPurchase 흐름
+     1. 클라이언트가 위시리스트에서 구매할 위시 아이템을 고른 후 결제 페이지로 진입한다. 이 때, 각 상품들의 재고가 감소된다.
+     2. 구입할 상품들과 주소값을 order-service에 통신을 통해 전달함으로써 Order를 생성한다.
      */
     @Override
     @Transactional
-    public ResponseEntity<ResponseDto> purchaseWishList(Long userId, AddressDto dto, List<WishItemDto> dtos) {
-        WishListDto wishListDto = WishListDto.fromWishItemDtos(dtos);
-        orderServiceClient.purchaseWishList(userId, dto.getAddressId(), wishListDto);
-
-        for (WishItemDto wishItemDto : dtos) {
-            wishItemRepository.deleteByWishItemId(wishItemDto.getWishItemId());
-        }
-
-        return ResponseDto.success();
+    public ResponseEntity<ResponseDto> chooseForPurchase(Long userId, List<WishItemDto> dtos) {
+        // 백엔드 로직만 두고 테스트하기 좋은 로직은 아니므로 우선순위를 미뤄둔다.
+//        WishListDto wishListDto = WishListDto.fromWishItemDtos(dtos);
+//        orderServiceClient.purchaseWishList(userId, dto.getAddressId(), wishListDto);
+//
+//        for (WishItemDto wishItemDto : dtos) {
+//            wishItemRepository.deleteByWishItemId(wishItemDto.getWishItemId());
+//        }
+//
+//        return ResponseDto.success();
+        return null;
     }
 
     /**
-     purchaseWishListTest 흐름
+     chooseForPurchaseTest 흐름
      1. 클라이언트가 위시리스트에서 구입할 품목들만 선택하는 것 없이 위시리스트의 아이템들을 모두 선택한다.
-     2. 사용자가 갖고 있는 주소 중 처음으로 조회되는 곳으로 선택한다.
-     3. 만든 주문 정보를 order-service에 넘겨준다.
+     이 때, 각 상품들의 재고가 감소된다.
+     2. 구입할 상품들과 주소값을 order-service에 통신을 통해 전달함으로써 Order를 생성한다.
      */
     @Override
     @Transactional
-    public ResponseEntity<ResponseDto> purchaseWishListTest(Long userId) {
+    public ResponseEntity<ResponseDto> chooseForPurchaseTest(Long userId) {
         List<WishItem> wishItems = wishItemRepository.findAllByUserId(userId);
-        Long addressId = addressService.findAllByUserId(userId).get(0).getAddressId();
 
+        // 각 상품들을 몇 개씩 주문하길 선택했는지에 대한 VO.
+        ItemStockControlRequests itemStockControlRequests = ItemStockControlRequests.fromWishItems(wishItems);
+        // VO로 재고 처리를 해준다.
+        itemService.decreaseStock(itemStockControlRequests);
+
+        /* 이제 위시리스트 상품들로 Order를 만들기 위해 order-service에 통신을 통해 wishListDto를 보낼 차례다.
+            wishListDto를 만들어서,                 */
         WishListDto wishListDto = WishListDto.fromWishItems(wishItems);
 
-        orderServiceClient.purchaseWishList(userId, addressId, wishListDto);
+        // order-service에 전달해서 order가 생성되게 끔 한다.
+        orderServiceClient.makeOrder(userId, wishListDto);
 
+        // 주문한 상품들은 위시리스트에서 삭제한다.
         for (WishItem wishItem : wishItems) {
             Item item = itemService.findByItemId(wishItem.getItemId());
-            item.removeStock(wishItem.getCount());
             wishItemRepository.delete(wishItem);
         }
 

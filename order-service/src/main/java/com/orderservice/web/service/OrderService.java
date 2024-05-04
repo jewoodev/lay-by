@@ -20,9 +20,11 @@ public interface OrderService {
 
     ResponseEntity<ResponseDto> refundOrder(Long orderId);
 
-    ResponseEntity<ResponseDto> purchaseWishList(Long userId, Long addressId, WishListDto wishListDto);
+    ResponseEntity<ResponseDto> makeOrder(Long userId, WishListDto wishListDto);
 
     List<Order> findAfterRefund();
 
     int getTotalPrice(Long orderId);
+
+    ResponseEntity<String> purchaseOrder(Long orderId, Long addressId);
 }

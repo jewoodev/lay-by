@@ -50,6 +50,7 @@ public class Delivery {
     /** 배송 상태 업데이트하는 메서드 **/
     public void updateStatus(DeliveryStatus status) {
         this.deliveryStatus = status;
+        this.modifiedDate = LocalDateTime.now();
     }
 
     /** 날짜를 체크해 배송 상태를 업데이트하는 메서드 **/
@@ -75,10 +76,11 @@ public class Delivery {
 
     /** Order가 취소될 때 사용될 배송 취소처리 메서드 **/
     public void cancel() {
-        DeliveryStatus deliveryStatus = checkStatus();
-        if (deliveryStatus == PROCESS || deliveryStatus == COMPLETE) {
-            throw new DeliveryCancelFailedException(DELIVERY_ALEADY_START.getMessage());
-        }
-        this.deliveryStatus = CANCEL;
+        updateStatus(CANCEL);
+    }
+
+    /** Order가 반품 처리에 성공했을 때 배송 상태 처리 메서드 **/
+    public void refundSucceed() {
+        updateStatus(RETURN_PROCESS);
     }
 }
