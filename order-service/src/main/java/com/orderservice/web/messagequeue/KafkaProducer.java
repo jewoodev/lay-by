@@ -1,12 +1,16 @@
-package com.itemservice.web.messagequeue;
+package com.orderservice.web.messagequeue;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.itemservice.domain.dto.WishListDto;
+import com.orderservice.domain.dto.ItemStockDtoList;
+import com.orderservice.domain.dto.WishItemDto;
+import com.orderservice.domain.dto.WishListDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -15,12 +19,12 @@ public class KafkaProducer {
 
     private final KafkaTemplate<String, String> kafkaTemplate;
 
-    public WishListDto send(String kafkaTopic, WishListDto wishListDto) {
+    public ItemStockDtoList send(String kafkaTopic, ItemStockDtoList itemStockDtoList) {
         ObjectMapper mapper = new ObjectMapper();
         String jsonInString = "";
 
         try {
-            jsonInString = mapper.writeValueAsString(wishListDto);
+            jsonInString = mapper.writeValueAsString(itemStockDtoList);
         } catch (JsonProcessingException ex) {
             ex.printStackTrace();
         }
@@ -28,6 +32,6 @@ public class KafkaProducer {
         kafkaTemplate.send(kafkaTopic, jsonInString);
         log.info("Kafka Producer send data from the item-service: {}", jsonInString);
 
-        return wishListDto;
+        return itemStockDtoList;
     }
 }

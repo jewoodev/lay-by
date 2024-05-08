@@ -6,5 +6,7 @@ public interface DeliveryService {
 
     Delivery findByDeliveryId(Long deliveryId);
 
-    Long createDelivery(Long addressId);
+    Delivery findByOrderId(Long orderId);
+
+    Long createDelivery(Long addressId, Long orderId);
 }

@@ -6,6 +6,7 @@ import com.orderservice.domain.entity.Order;
 import com.orderservice.domain.entity.OrderItem;
 import com.orderservice.web.client.ItemServiceClient;
 import com.orderservice.domain.repository.OrderRepository;
+import com.orderservice.web.messagequeue.KafkaProducer;
 import com.orderservice.web.service.DeliveryService;
 import com.orderservice.web.service.OrderItemService;
 import com.orderservice.web.service.OrderService;
@@ -30,6 +31,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrderItemService orderItemService;
     private final DeliveryService deliveryService;
     private final ItemServiceClient itemServiceClient;
+    private final KafkaProducer kafkaProducer;
 
     @Override
     public Long save(Order order) {
@@ -51,7 +53,7 @@ public class OrderServiceImpl implements OrderService {
 
         // Dto로 변환해서
         for (Order order : allByUser) {
-            Delivery delivery = deliveryService.findByDeliveryId(order.getDeliveryId());
+            Delivery delivery = deliveryService.findByOrderId(order.getOrderId());
             OrderStatusDto orderStatusDto = OrderStatusDto.convertToStatusDto(order, delivery.getDeliveryStatus());
             responseBody.add(orderStatusDto);
         }
@@ -70,7 +72,7 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public ResponseEntity<ResponseDto> cancelOrder(Long orderId) {
         Order order = findByOrderId(orderId);
-        Delivery delivery = deliveryService.findByDeliveryId(order.getDeliveryId());
+        Delivery delivery = deliveryService.findByOrderId(order.getOrderId());
         order.cancel(delivery); // 1.
         delivery.cancel(); // 1.
         List<OrderItem> orderItems = orderItemService.findAllByOrderId(orderId);
@@ -97,7 +99,7 @@ public class OrderServiceImpl implements OrderService {
     @Transactional
     public ResponseEntity<ResponseDto> refundOrder(Long orderId) {
         Order order = orderRepository.findByOrderId(orderId);
-        Delivery delivery = deliveryService.findByDeliveryId(order.getDeliveryId());
+        Delivery delivery = deliveryService.findByOrderId(order.getOrderId());
         order.refund(delivery);
         delivery.refundSucceed();
 
@@ -160,17 +162,20 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public ResponseEntity<String> purchaseOrder(Long orderId, Long deliveryId) {
+    public ResponseEntity<String> purchaseOrder(Long orderId) {
+
+        List<OrderItem> orderItems = orderItemService.findAllByOrderId(orderId);
         // 결제 화면에서의 실패 시나리오
-        if (new Random().nextInt(100) < 20) {
+        if (new Random().nextInt(100) < 100) {
+            kafkaProducer.send("order-failed", ItemStockDtoList.fromOrderItems(orderItems));
             return ResponseEntity.status(PAYMENT_REQUIRED).body("고객 변심 이탈.");
         } else if (new Random().nextInt(100) < 20) {
+            kafkaProducer.send("order-failed", ItemStockDtoList.fromOrderItems(orderItems));
             return ResponseEntity.status(INTERNAL_SERVER_ERROR).body("결제 실패 이탈.");
         }
 
-        Order order = findByOrderId(orderId);
+        Order order = orderRepository.findByOrderId(orderId);
         order.updateStatus(PURCHASE);
-        order.mappingDeliveryId(deliveryId);
 
         return ResponseEntity.status(OK).body("결제가 성공적으로 완료되었습니다.");
     }

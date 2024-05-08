@@ -43,12 +43,11 @@ public class OrderController {
     /**
      결제 페이지에서 주소를 선택한 후 최종적으로 호출하는 결제 API
      */
-    @PatchMapping("/{order_id}")
+    @PutMapping("/{order_id}")
     public ResponseEntity<String> purchaseOrder(
-            @PathVariable(name = "order_id") Long orderId,
-            @RequestParam Long deliveryId
+            @PathVariable(name = "order_id") Long orderId
     ) {
-        return orderService.purchaseOrder(orderId, deliveryId);
+        return orderService.purchaseOrder(orderId);
     }
 
     /**

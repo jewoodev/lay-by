@@ -16,10 +16,11 @@ public class DeliveryController {
 
     private final DeliveryService deliveryService;
 
-    @PostMapping("/{address_id}")
+    @PostMapping("/{address_id}/{order_id}")
     public Long createDelivery(
-            @PathVariable(name = "address_id") Long addressId
+            @PathVariable(name = "address_id") Long addressId,
+            @PathVariable(name = "order_id") Long orderId
     ) {
-        return deliveryService.createDelivery(addressId);
+        return deliveryService.createDelivery(addressId, orderId);
     }
 }

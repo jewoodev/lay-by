@@ -28,6 +28,9 @@ public class Delivery {
     @Column(name = "address_id")
     private Long addressId;
 
+    @Column(name = "order_id")
+    private Long orderId;
+
     @Enumerated(EnumType.STRING)
     private DeliveryStatus deliveryStatus;
 
@@ -39,8 +42,9 @@ public class Delivery {
 
     // 주문 창에서 필요한 생성자
     @Builder
-    public Delivery(Long addressId) {
+    public Delivery(Long addressId, Long orderId) {
         this.addressId = addressId;
+        this.orderId = orderId;
         this.deliveryStatus = PREPARE;
         this.createdDate = LocalDateTime.now();
         this.modifiedDate = LocalDateTime.now();
