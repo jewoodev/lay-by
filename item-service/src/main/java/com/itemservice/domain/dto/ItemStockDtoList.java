@@ -1,6 +1,5 @@
-package com.orderservice.domain.dto;
+package com.itemservice.domain.dto;
 
-import com.orderservice.domain.entity.OrderItem;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,17 +19,6 @@ public class ItemStockDtoList {
 
         for (WishItemDto wishItemDto : wishItemDtos) {
             ItemStockDto itemStockDto = new ItemStockDto(wishItemDto.getItemId(), wishItemDto.getCount());
-            itemStockDtos.add(itemStockDto);
-        }
-
-        return new ItemStockDtoList(itemStockDtos);
-    }
-
-    public static ItemStockDtoList fromOrderItems(List<OrderItem> orderItems) {
-        List<ItemStockDto> itemStockDtos = new ArrayList<>();
-
-        for (OrderItem orderItem : orderItems) {
-            ItemStockDto itemStockDto = new ItemStockDto(orderItem.getItemId(), orderItem.getCount());
             itemStockDtos.add(itemStockDto);
         }
 

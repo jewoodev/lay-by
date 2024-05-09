@@ -21,9 +21,14 @@ public class DeliveryServiceImpl implements DeliveryService {
     }
 
     @Override
+    public Delivery findByOrderId(Long orderId) {
+        return deliveryRepository.findByOrderId(orderId);
+    }
+
+    @Override
     @Transactional
-    public Long createDelivery(Long addressId) {
-        Delivery delivery = new Delivery(addressId);
+    public Long createDelivery(Long addressId, Long orderId) {
+        Delivery delivery = new Delivery(addressId, orderId);
         Delivery saved = deliveryRepository.save(delivery);
         return saved.getDeliveryId();
     }

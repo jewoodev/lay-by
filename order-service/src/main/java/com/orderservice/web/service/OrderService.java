@@ -26,5 +26,5 @@ public interface OrderService {
 
     int getTotalPrice(Long orderId);
 
-    ResponseEntity<String> purchaseOrder(Long orderId, Long addressId);
+    ResponseEntity<String> purchaseOrder(Long orderId);
 }
