@@ -1,10 +1,11 @@
 package com.itemservice.domain.vo.request;
 
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 
-@Getter @Setter
+@Getter
+@AllArgsConstructor
 public class ItemRequest {
 
     @NotBlank
