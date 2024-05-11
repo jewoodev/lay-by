@@ -22,7 +22,6 @@ public class RedissonLockItemFacade {
     private final RedissonClient redissonClient;
     private final ItemService itemService;
 
-    @Transactional
     public void decrease(ItemStockControlRequests itemStockControlRequests) {
         List<ItemStockControlRequest> requestList = itemStockControlRequests.getItemStockControlRequests();
         for (ItemStockControlRequest request : requestList) {
@@ -37,8 +36,7 @@ public class RedissonLockItemFacade {
                 }
 
                 log.info("락 획득, 로직 수행");
-                Item item = itemService.findByItemId(request.getItemId());
-                item.removeStock(request.getCount());
+                itemService.decreaseStockByOneRequest(request);
             } catch (InterruptedException ex) {
                 log.info("에러 발생");
                 throw new RuntimeException(ex);

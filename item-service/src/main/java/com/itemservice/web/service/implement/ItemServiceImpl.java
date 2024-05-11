@@ -93,4 +93,11 @@ public class ItemServiceImpl implements ItemService {
             item.removeStock(itemStockControlRequest.getCount());
         }
     }
+
+    @Override
+    @Transactional
+    public void decreaseStockByOneRequest(ItemStockControlRequest request) {
+        Item item = itemRepository.findByItemIdWithPMCLock(request.getItemId());
+        item.removeStock(request.getCount());
+    }
 }
