@@ -4,12 +4,14 @@ import com.itemservice.domain.entity.WishItem;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Builder
 @Getter @Setter
+@ToString
 public class WishListDto {
 
     private List<WishItemDto> wishItemDtos;

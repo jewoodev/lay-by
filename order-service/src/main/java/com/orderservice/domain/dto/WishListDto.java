@@ -1,21 +1,22 @@
 package com.orderservice.domain.dto;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Builder
 @Getter @Setter
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
 public class WishListDto {
 
     private List<WishItemDto> wishItemDtos;
 
     private int totalPrice = 0;
 
-    //== 생성자 메서드 ==//
+    //== 생성 메서드 ==//
     public static WishListDto fromWishItemDtos(List<WishItemDto> dtos) {
         int totalPrice = 0;
 

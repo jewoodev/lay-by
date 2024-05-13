@@ -9,6 +9,7 @@ import com.itemservice.domain.vo.request.ItemStockControlRequests;
 import com.itemservice.web.client.OrderServiceClient;
 import com.itemservice.web.exception.DatabaseErrorException;
 import com.itemservice.domain.repository.WishItemRepository;
+import com.itemservice.web.messagequeue.KafkaProducer;
 import com.itemservice.web.service.ItemService;
 import com.itemservice.web.service.WishItemService;
 import com.itemservice.domain.vo.request.WishItemRequest;
@@ -32,6 +33,7 @@ public class WishItemServiceImpl implements WishItemService {
     private final WishItemRepository wishItemRepository;
     private final ItemService itemService;
     private final OrderServiceClient orderServiceClient;
+    private final KafkaProducer kafkaProducer;
 
     @Override
     @Transactional
@@ -154,7 +156,7 @@ public class WishItemServiceImpl implements WishItemService {
         WishListDto wishListDto = WishListDto.fromWishItems(wishItems);
 
         // order-service에 전달해서 order가 생성되게 끔 한다.
-        orderServiceClient.makeOrder(userId, wishListDto);
+        kafkaProducer.send("make-order", wishListDto);
 
         // 주문한 상품들은 위시리스트에서 삭제한다.
         for (WishItem wishItem : wishItems) {

@@ -3,6 +3,7 @@ package com.itemservice.web.service.implement;
 import com.itemservice.domain.dto.*;
 import com.itemservice.domain.entity.Item;
 import com.itemservice.domain.repository.ItemRepository;
+import com.itemservice.domain.repository.RedissonLockItemFacade;
 import com.itemservice.domain.vo.request.ItemStockControlRequest;
 import com.itemservice.domain.vo.request.ItemStockControlRequests;
 import com.itemservice.domain.vo.response.ItemStockResponse;
@@ -78,7 +79,7 @@ public class ItemServiceImpl implements ItemService {
     @Transactional
     public ResponseEntity<ResponseDto> increaseStock(ItemStockControlRequests itemStockControlRequests) {
         for (ItemStockControlRequest request : itemStockControlRequests.getItemStockControlRequests()) {
-            Item item = itemRepository.findByItemId(request.getItemId());
+            Item item = itemRepository.findByItemIdWithPMCLock(request.getItemId());
             item.addStock(request.getCount());
         }
         return ResponseDto.success();
@@ -88,8 +89,15 @@ public class ItemServiceImpl implements ItemService {
     @Transactional
     public void decreaseStock(ItemStockControlRequests requests) {
         for (ItemStockControlRequest itemStockControlRequest : requests.getItemStockControlRequests()) {
-            Item item = itemRepository.findByItemId(itemStockControlRequest.getItemId());
+            Item item = itemRepository.findByItemIdWithPMCLock(itemStockControlRequest.getItemId());
             item.removeStock(itemStockControlRequest.getCount());
         }
+    }
+
+    @Override
+    @Transactional
+    public void decreaseStockByOneRequest(ItemStockControlRequest request) {
+        Item item = itemRepository.findByItemIdWithPMCLock(request.getItemId());
+        item.removeStock(request.getCount());
     }
 }

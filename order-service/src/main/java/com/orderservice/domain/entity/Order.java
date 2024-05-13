@@ -47,16 +47,9 @@ public class Order {
     @Column(name = "user_id")
     private Long userId;
 
-    @Column(name = "delivery_id")
-    private Long deliveryId;
-
     //== 연관 관계 메서드 ==//
     public void mappingUserId(Long userId) {
         this.userId = userId;
-    }
-
-    public void mappingDeliveryId(Long deliveryId) {
-        this.deliveryId = deliveryId;
     }
 
     //== 생성 메서드 ==//
