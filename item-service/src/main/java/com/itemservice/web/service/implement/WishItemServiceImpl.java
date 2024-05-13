@@ -157,6 +157,7 @@ public class WishItemServiceImpl implements WishItemService {
 
         // order-service에 전달해서 order가 생성되게 끔 한다.
         kafkaProducer.send("make-order", wishListDto);
+//        orderServiceClient.makeOrder(userId, wishListDto);
 
         // 주문한 상품들은 위시리스트에서 삭제한다.
         for (WishItem wishItem : wishItems) {
