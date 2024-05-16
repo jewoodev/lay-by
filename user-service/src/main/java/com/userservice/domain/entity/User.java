@@ -44,7 +44,7 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-        @Column(name = "uuid")
+    @Column(name = "uuid")
     private String uuid;
 
     @Column(name = "created_date")

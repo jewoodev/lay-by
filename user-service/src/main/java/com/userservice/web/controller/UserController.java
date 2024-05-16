@@ -39,11 +39,4 @@ public class UserController {
     ) {
         return userService.updatePassword(userId, dto);
     }
-
-    @PatchMapping("/{user_id}/after-email-cf")
-    public ResponseEntity<ResponseDto> afterEmailCf(
-            @PathVariable(name = "user_id") Long userId
-    ) {
-        return userService.updateRoleAfterEmailCF(userId);
-    }
 }

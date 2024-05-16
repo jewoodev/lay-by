@@ -16,8 +16,7 @@ import java.time.LocalDateTime;
 @Entity(name = "address")
 public class Address {
 
-    @Id
-    @Column(name = "address_id")
+    @Id @Column(name = "address_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long addressId;
 

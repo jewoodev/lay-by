@@ -124,15 +124,14 @@ public class WishItemServiceImpl implements WishItemService {
     @Transactional
     public ResponseEntity<ResponseDto> chooseForPurchase(Long userId, List<WishItemDto> dtos) {
         // 백엔드 로직만 두고 테스트하기 좋은 로직은 아니므로 우선순위를 미뤄둔다.
-//        WishListDto wishListDto = WishListDto.fromWishItemDtos(dtos);
-//        orderServiceClient.purchaseWishList(userId, dto.getAddressId(), wishListDto);
-//
-//        for (WishItemDto wishItemDto : dtos) {
-//            wishItemRepository.deleteByWishItemId(wishItemDto.getWishItemId());
-//        }
-//
-//        return ResponseDto.success();
-        return null;
+        WishListDto wishListDto = WishListDto.fromWishItemDtos(dtos);
+        kafkaProducer.send("make-order", wishListDto);
+
+        for (WishItemDto wishItemDto : dtos) {
+            wishItemRepository.deleteByWishItemId(wishItemDto.getWishItemId());
+        }
+
+        return ResponseDto.success();
     }
 
     /**
@@ -161,7 +160,6 @@ public class WishItemServiceImpl implements WishItemService {
 
         // 주문한 상품들은 위시리스트에서 삭제한다.
         for (WishItem wishItem : wishItems) {
-            Item item = itemService.findByItemId(wishItem.getItemId());
             wishItemRepository.delete(wishItem);
         }
 

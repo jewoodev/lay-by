@@ -19,8 +19,6 @@ public interface UserService {
 
     ResponseEntity<ResponseDto> updatePassword(Long userId, UserPasswordUpdateRequest dto);
 
-    ResponseEntity<ResponseDto> updateRoleAfterEmailCF(Long userId);
-
     boolean existsByUsername(String username);
 
     Long save(User user);

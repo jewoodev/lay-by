@@ -8,17 +8,17 @@ import lombok.RequiredArgsConstructor;
 public enum ErrorCode {
     VALIDATION_FAIL("401", "Validation failed."),
 
-    DUPLICATED_USERNAME("409", "Duplicate Id."),
+    DUPLICATED_USERNAME("409", "Duplicated username."),
 
     SIGN_IN_FAIL("400", "Login information mismatch."),
 
-    CERTIFICATION_FAIL("400", "Certification failed"),
+    CERTIFICATION_FAIL("400", "Certification failed."),
 
     MAIL_FAIL("400", "Mail send failed."),
 
     DATABASE_ERROR("500", "Database error."),
 
-    INTERNAL_SERVER_ERROR("500", "Server Error aroused. Please contact the server administrator"),
+    INTERNAL_SERVER_ERROR("500", "Server Error aroused. Please contact the server administrator."),
 
     NOT_ENOUGH_STOCK("409", "All stock has been sold out."),
 

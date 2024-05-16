@@ -110,16 +110,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Transactional
-    public ResponseEntity<ResponseDto> updateRoleAfterEmailCF(Long userId) {
-        User user = userRepository.findByUserId(userId);
-
-        user.afterCertification();
-
-        return ResponseDto.success();
-    }
-
-    @Override
     public boolean existsByUsername(String username) {
         return userRepository.existsByUsername(username);
     }
