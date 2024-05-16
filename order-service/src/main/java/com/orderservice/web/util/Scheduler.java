@@ -1,27 +1,12 @@
 package com.orderservice.web.util;
 
-import com.orderservice.domain.dto.ItemStockDto;
-import com.orderservice.domain.dto.ItemStockDtoList;
-import com.orderservice.domain.entity.Delivery;
-import com.orderservice.domain.entity.Order;
-import com.orderservice.domain.entity.OrderItem;
 import com.orderservice.web.client.ItemServiceClient;
 import com.orderservice.web.service.DeliveryService;
 import com.orderservice.web.service.OrderItemService;
 import com.orderservice.web.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.orderservice.domain.common.DeliveryStatus.*;
-import static com.orderservice.domain.common.OrderStatus.*;
 
 @Slf4j
 @Component
@@ -64,7 +49,7 @@ public class Scheduler {
 //                itemServiceClient.increaseStock(itemStockDtoList);
 //
 //                // 배송 상태도 반품 완료로 업데이트한다.
-//                Delivery delivery = deliveryService.findByDeliveryId(order.getDeliveryId());
+//                Delivery delivery = deliveryService.findByOrderId(order.getOrderId());
 //                delivery.updateStatus(RETURN_COMPLETE);
 //            }
 //        }
