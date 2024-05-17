@@ -33,34 +33,6 @@
 > - 배송 생성
 > - 배송지목록 관리
 
-## 🤔 기술적 의사결정
-
-##### 인가 처리 방식
-
-> 어플리케이션의 구조와 효율적인 비용 전략이 고려된 인가 처리 방식이 사용됩니다.
-
-##### API Gateway 
-
-> 트래픽에 따라 스케일링 되는 서비스들을 라우팅하고 권한이 필요한 요청에 인가처리를 합니다. 
-
-##### Scheduler
-
-> 배치 작업을 스케줄링하여 주문 상태, 배송 상태를 시간에 따라 변경
-
-##### Redis
-
-> 연속된 요청으로 인한 DB 병목현상을 완화하고 보관 기간 설정이 필요한 정보들을 관리합니다. 
-
-##### Kafka
-
-> 분산 환경에서 다수의 서비스 로직이 사용되어야 하는 API를 관리하기 위해 MQ를 사용합니다.
-
-## 🚨 Trouble Shooting
-
-##### JWT 로직 문제
-
-##### 연관관계 매핑에서 비롯된 MSA 전환 문제
-
 ## 🗂 ERD
 
 <img src="https://github.com/jewoodev/lay-by/blob/docs/docs/erd.png?raw=true" alt="erd" style="zoom:80%;" />
@@ -68,6 +40,40 @@
 ## 🚧 시스템 아키텍처
 
 <img src="./docs/layby-architecture.png" alt="layby-architecture" style="zoom:80%;" />
+
+## 🤔 기술적 의사결정
+
+##### 인가 처리 방식 [Wiki >](https://github.com/jewoodev/lay-by/wiki/%5B%EA%B8%B0%EC%88%A0%EC%A0%81-%EC%9D%98%EC%82%AC%EA%B2%B0%EC%A0%95%5D-%EC%9D%B8%EC%A6%9D,-%EC%9D%B8%EA%B0%80-%EC%B2%98%EB%A6%AC-%EB%B0%A9%EC%8B%9D)
+
+> 어플리케이션의 구조와 효율적인 비용 전략이 고려된 인가 처리 방식이 사용됩니다.
+
+##### API Gateway [Wiki >](https://github.com/jewoodev/lay-by/wiki/%5B%EA%B8%B0%EC%88%A0%EC%A0%81-%EC%9D%98%EC%82%AC%EA%B2%B0%EC%A0%95%5D-API-Gateway)
+
+> 트래픽에 따라 스케일링 되는 서비스들을 라우팅하고 권한이 필요한 요청에 인가처리를 합니다. 
+
+##### Scheduler [Wiki >](https://github.com/jewoodev/lay-by/wiki/%5B%EA%B8%B0%EC%88%A0%EC%A0%81-%EC%9D%98%EC%82%AC%EA%B2%B0%EC%A0%95%5D-Scheduler)
+
+> 배치 작업을 스케줄링하여 주문 상태, 배송 상태를 시간에 따라 변경합니다.
+
+##### Redis [Wiki >](https://github.com/jewoodev/lay-by/wiki/%5B%EA%B8%B0%EC%88%A0%EC%A0%81-%EC%9D%98%EC%82%AC%EA%B2%B0%EC%A0%95%5D-Redis)
+
+> 연속된 요청으로 인한 DB 병목현상을 완화하고 보관 기간 설정이 필요한 정보들을 관리합니다. 
+
+##### Kafka [Wiki >](https://github.com/jewoodev/lay-by/wiki/%5B%EA%B8%B0%EC%88%A0%EC%A0%81-%EC%9D%98%EC%82%AC%EA%B2%B0%EC%A0%95%5D-Kafka)
+
+> 분산 환경에서 다수의 서비스 로직이 사용되어야 하는 API를 관리하기 위해 MQ를 사용합니다.
+
+##### k6 [Wiki >](https://github.com/jewoodev/lay-by/wiki/%5B%EA%B8%B0%EC%88%A0%EC%A0%81-%EC%9D%98%EC%82%AC%EA%B2%B0%EC%A0%95%5D-k6)
+
+> 요구되는 테스트 복잡도를 구현할 수 있으면서 가장 적은 리소스를 사용하는 테스트 도구를 사용합니다.
+
+## 🚨 Trouble Shooting
+
+##### JWT 로직 문제 [Wiki >]
+
+##### 연관관계 매핑에서 비롯된 MSA 전환 문제 
+
+##### Concurrency Problem [Wiki >]()
 
 ## 📚 API 명세서
 
