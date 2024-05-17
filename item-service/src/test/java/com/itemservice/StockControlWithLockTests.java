@@ -45,32 +45,33 @@ public class StockControlWithLockTests {
         itemRepository.deleteAll();
     }
 
-    // 18sec 77ms
-//    @Test
-//    public void 동시에_100개_요청_비관적락() throws InterruptedException {
-//        int threadCount = 1000;
-//        ExecutorService executorService = Executors.newFixedThreadPool(32);
-//        CountDownLatch latch = new CountDownLatch(threadCount);
-//
-//        for (int i = 0; i < threadCount; i++) {
-//            ItemStockControlRequest request = new ItemStockControlRequest(ITEM_ID, 1);
-//            List<ItemStockControlRequest> requests = new ArrayList<>();
-//            requests.add(request);
-//            executorService.submit(() -> {
-//                try {
-//                    itemService.decreaseStock(new ItemStockControlRequests(requests));
-//                } finally {
-//                    latch.countDown();
-//                }
-//            });
-//        }
-//
-//        latch.await();
-//        int stockQuantity = itemService.findByItemId(ITEM_ID).getStockQuantity();
-//
-//        assertEquals(0, stockQuantity);
-//    }
+    // 10sec 64ms
+    @Test
+    public void 동시에_100개_요청_비관적락() throws InterruptedException {
+        int threadCount = 1000;
+        ExecutorService executorService = Executors.newFixedThreadPool(32);
+        CountDownLatch latch = new CountDownLatch(threadCount);
 
+        for (int i = 0; i < threadCount; i++) {
+            ItemStockControlRequest request = new ItemStockControlRequest(ITEM_ID, 1);
+            List<ItemStockControlRequest> requests = new ArrayList<>();
+            requests.add(request);
+            executorService.submit(() -> {
+                try {
+                    itemService.decreaseStock(new ItemStockControlRequests(requests));
+                } finally {
+                    latch.countDown();
+                }
+            });
+        }
+
+        latch.await();
+        int stockQuantity = itemService.findByItemId(ITEM_ID).getStockQuantity();
+
+        assertEquals(0, stockQuantity);
+    }
+
+    // 19sec 599ms
     @Test
     public void 동시에_100개_요청_레디슨() throws InterruptedException {
         int threadCount = 1000;
