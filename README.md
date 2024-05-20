@@ -2,7 +2,7 @@
 
 ## 🖥️ 프로젝트 소개 
 
-변화하는 트래픽 양에 따라 유연하게 서버를 운영할 수 있는 MSA 구조를 이용해 기업과 사용자 모두에게 만족감을 주기 위한  예약 구매 서비스
+변화하는 트래픽 양에 따라 유연하게 서버를 운영할 수 있도록 MSA를 도입한 전자기기 E-commerce 서비스
 
 ## 📌 프로젝트 기능
 
@@ -69,17 +69,23 @@
 
 ## 🚨 Trouble Shooting
 
-### JWT 로직 문제 [Wiki >](https://github.com/jewoodev/lay-by/wiki/%5BTroubleshooting%5D-JWT-%EB%A1%9C%EC%A7%81-%EB%AC%B8%EC%A0%9C)
+### authenticate() 메서드에서 401 상태만을 반환하는 문제 [Wiki >](https://github.com/jewoodev/lay-by/wiki/%5BTroubleshooting%5D-JWT-%EB%A1%9C%EC%A7%81-%EB%AC%B8%EC%A0%9C)
 
 ### 연관관계 매핑에서 비롯된 MSA 전환 문제 [Wiki >](https://github.com/jewoodev/lay-by/wiki/%5BTroubleshooting%5D-%EC%97%B0%EA%B4%80%EA%B4%80%EA%B3%84-%EB%A7%A4%ED%95%91%EC%97%90%EC%84%9C-%EB%B9%84%EB%A1%AF%EB%90%9C-MSA-%EC%A0%84%ED%99%98-%EB%AC%B8%EC%A0%9C)
 
-### Concurrency Problem [Wiki >](https://github.com/jewoodev/lay-by/wiki/%5BTroubleshooting%5D-%EB%8F%99%EC%8B%9C%EC%84%B1-%EB%AC%B8%EC%A0%9C-%ED%95%B4%EA%B2%B0)
+### 재고 처리에서 생겨나는 동시성 문제 [Wiki >](https://github.com/jewoodev/lay-by/wiki/%5BTroubleshooting%5D-%EB%8F%99%EC%8B%9C%EC%84%B1-%EB%AC%B8%EC%A0%9C-%ED%95%B4%EA%B2%B0)
 
 ## 📚 API 명세서
 
 - 명세서 문서 확인하기 [Click](https://abiding-maple-302.notion.site/API-8f47025d489f4672bbed25ab7021f49f?pvs=4)
 
 ## ⚙️ 개발 환경
+
+- Java 21
+- Spring Boot 3.2.4 (Spring Data JPA(3.2.4), QueryDSL(querydsl-jpa:5.0.0:jakarta), MVC(spring-webmvc:6.1.5))
+- Spring Cloud Eureka(4.1.1), Gateway(4.1.2), Load Balancer(4.1.2), Resilience4j(3.1.1), Validation(3.0.2), Mail Sender(spring-boot-starter-mail:3.2.4)
+- Kafka(spring-kafka:3.1.3, kafka-clients:3.6.1), JWT(jjwt:0.11.5)
+- Redis(spring-data-redis:3.2.4), Redisson(3.23.2)
 
 [![img](https://camo.githubusercontent.com/3803468498d4b21719aced19028e21a6da499a5612de47661042d22997d8e8af/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f6a6176612d3030373339363f7374796c653d666f722d7468652d6261646765266c6f676f3d6a617661266c6f676f436f6c6f723d7768697465)](https://camo.githubusercontent.com/3803468498d4b21719aced19028e21a6da499a5612de47661042d22997d8e8af/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f6a6176612d3030373339363f7374796c653d666f722d7468652d6261646765266c6f676f3d6a617661266c6f676f436f6c6f723d7768697465) [![img](https://camo.githubusercontent.com/d208dca36239d678e4f1539bc935cd1663a95ff87dabcfa24b8654dfd5d57900/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f537072696e67426f6f742d3644423333463f7374796c653d666f722d7468652d6261646765266c6f676f3d737072696e67626f6f74266c6f676f436f6c6f723d7768697465)](https://camo.githubusercontent.com/d208dca36239d678e4f1539bc935cd1663a95ff87dabcfa24b8654dfd5d57900/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f537072696e67426f6f742d3644423333463f7374796c653d666f722d7468652d6261646765266c6f676f3d737072696e67626f6f74266c6f676f436f6c6f723d7768697465) ![img](https://camo.githubusercontent.com/9367bef94430f73c20827a1c9dc20694bde67ea12f172cfcc5696bd2a097d8b8/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f4a534f4e576562546f6b656e2d3030303030303f7374796c653d666f722d7468652d6261646765266c6f676f3d4a534f4e576562546f6b656e73266c6f676f436f6c6f723d7768697465) <img src="https://img.shields.io/badge/apachekafka-231F20?style=for-the-badge&logo=apachekafka&logoColor=white"/>
 
