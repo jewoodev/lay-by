@@ -35,7 +35,7 @@
 
 ## 🗂 ERD
 
-<img src="https://github.com/jewoodev/lay-by/blob/docs/docs/erd.png?raw=true" alt="erd" style="zoom:80%;" />
+<img src="https://github.com/jewoodev/lay-by/blob/main/docs/erd.png?raw=true" alt="erd" style="zoom:80%;" />
 
 ## 🚧 시스템 아키텍처
 
