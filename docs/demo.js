@@ -29,7 +29,7 @@ export default function () {
     const params1 = {
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI0MzEyNjRhOC00MjZlLTQ0ZDAtODNkYi0zOWFlNjQ3YzZkYWEiLCJpYXQiOjE3MTU2MTEzMzksImF1dGgiOiJVU0VSIiwiZXhwIjoxNzE1NjE0OTM5fQ.7rN3LRWuaWZ3NOyB82NAZGNjyYe4SiJeRjIF3scBG6joke9R1s3_QSmvhYaPigFM9Mhq9-u4Cwdn5u5a_kD_zg',
+            'Authorization': '...',
         },
     };
 
@@ -48,7 +48,7 @@ export default function () {
     const params2 = {
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI0MzEyNjRhOC00MjZlLTQ0ZDAtODNkYi0zOWFlNjQ3YzZkYWEiLCJpYXQiOjE3MTU2MTEzMzksImF1dGgiOiJVU0VSIiwiZXhwIjoxNzE1NjE0OTM5fQ.7rN3LRWuaWZ3NOyB82NAZGNjyYe4SiJeRjIF3scBG6joke9R1s3_QSmvhYaPigFM9Mhq9-u4Cwdn5u5a_kD_zg',
+            'Authorization': '...',
         },
     };
 

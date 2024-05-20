@@ -17,7 +17,7 @@ public class AuthController {
 
     private final AuthService authService;
 
-    @PostMapping("/username-check")
+    @GetMapping("/username-check")
     public ResponseEntity<ResponseDto> usernameCheck(
             @RequestBody @Valid UsernameCheckRequest requestBody
         ) {
@@ -58,7 +58,7 @@ public class AuthController {
         return ResponseDto.success();
     }
 
-    @PostMapping("/{uuid}")
+    @DeleteMapping("/{user_id}")
     public ResponseEntity<ResponseDto> logout(@PathVariable(name = "user_id") Long userId) {
         return authService.logout(userId);
     }

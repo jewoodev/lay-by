@@ -30,12 +30,14 @@ public class Order {
     @Column(name = "order_id")
     private Long orderId;
 
+    @Column(name = "order_status")
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
     @Column(name = "total_price")
     private int totalPrice;
 
+    @Column(name = "refund_request_date")
     private LocalDateTime refundRequestDate;
 
     @Column(name = "created_date")

@@ -55,6 +55,7 @@ public class OrderController {
      */
     @PutMapping("/{user_id}/{order_id}/cancel")
     public ResponseEntity<ResponseDto> cancelOrder(
+            @PathVariable(name = "user_id") Long userId,
             @PathVariable(name = "order_id") Long orderId
     ) {
         return orderService.cancelOrder(orderId);
@@ -63,8 +64,9 @@ public class OrderController {
     /**
      주문을 환불하는 API
      */
-    @PutMapping("/{order_id}/refund")
+    @PutMapping("/{user_id}/{order_id}/refund")
     public ResponseEntity<ResponseDto> refundOrder(
+            @PathVariable(name = "user_id") Long userId,
             @PathVariable(name = "order_id") Long orderId
     ) {
         return orderService.refundOrder(orderId);

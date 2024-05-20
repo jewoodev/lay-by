@@ -25,12 +25,6 @@ public class Delivery {
     @Column(name = "delivery_id")
     private Long deliveryId;
 
-    @Column(name = "address_id")
-    private Long addressId;
-
-    @Column(name = "order_id")
-    private Long orderId;
-
     @Enumerated(EnumType.STRING)
     private DeliveryStatus deliveryStatus;
 
@@ -39,6 +33,12 @@ public class Delivery {
 
     @Column(name = "modified_date")
     private LocalDateTime modifiedDate;
+
+    @Column(name = "address_id")
+    private Long addressId;
+
+    @Column(name = "order_id")
+    private Long orderId;
 
     // 주문 창에서 필요한 생성자
     @Builder

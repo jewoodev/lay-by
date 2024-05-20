@@ -74,7 +74,7 @@ public class WishItemController {
     /**
      위시리스트에 담은 상품을 위시리스트에서 제거하는 API
      */
-    @DeleteMapping("/{wish_item_id}/")
+    @DeleteMapping("/{wish_item_id}")
     public ResponseEntity<ResponseDto> delete(
             @PathVariable(name = "wish_item_id") Long wishItemId
     ) {
