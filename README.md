@@ -67,7 +67,7 @@
 
 > 요구되는 테스트 복잡도를 구현할 수 있으면서 가장 적은 리소스를 사용하는 테스트 도구를 사용합니다.
 
-## 🚨 Trouble Shooting
+## 🚨 트러블슈팅
 
 ### authenticate() 메서드에서 401 상태만을 반환하는 문제 [Wiki >](https://github.com/jewoodev/lay-by/wiki/%5BTroubleshooting%5D-JWT-%EB%A1%9C%EC%A7%81-%EB%AC%B8%EC%A0%9C)
 
@@ -75,9 +75,13 @@
 
 ### 재고 처리에서 생겨나는 동시성 문제 [Wiki >](https://github.com/jewoodev/lay-by/wiki/%5BTroubleshooting%5D-%EB%8F%99%EC%8B%9C%EC%84%B1-%EB%AC%B8%EC%A0%9C-%ED%95%B4%EA%B2%B0)
 
+## ⏩ 성능 개선
+
+### 다수의 서비스가 통신할 필요가 있는 로직의 성능 개선 [Wiki >](https://github.com/jewoodev/lay-by/wiki/%5B%EC%84%B1%EB%8A%A5-%EA%B0%9C%EC%84%A0%5D-%EB%8B%A4%EC%88%98%EC%9D%98-%EC%84%9C%EB%B9%84%EC%8A%A4%EA%B0%80-%ED%86%B5%EC%8B%A0%ED%95%A0-%ED%95%84%EC%9A%94%EA%B0%80-%EC%9E%88%EB%8A%94-%EB%A1%9C%EC%A7%81%EC%9D%98-%EC%84%B1%EB%8A%A5-%EA%B0%9C%EC%84%A0)
+
 ## 📚 API 명세서
 
-- 명세서 문서 확인하기 [Click](https://abiding-maple-302.notion.site/API-8f47025d489f4672bbed25ab7021f49f?pvs=4)
+### 명세서 문서 확인하기 [Click](https://abiding-maple-302.notion.site/API-8f47025d489f4672bbed25ab7021f49f?pvs=4)
 
 ## ⚙️ 개발 환경
 
