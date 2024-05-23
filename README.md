@@ -35,11 +35,11 @@
 
 ## 🗂 ERD
 
-<img src="https://github.com/jewoodev/lay-by/blob/main/docs/erd.png?raw=true" alt="erd" width="60%" />
+<img src="https://github.com/jewoodev/lay-by/blob/main/docs/erd.png?raw=true" alt="erd" width="70%" />
 
 ## 🚧 시스템 아키텍처
 
-<img src="./../blog_img/README/layby-architecture.png" alt="layby-architecture" width="60%" />
+<img src="./docs/layby-architecture.png" alt="layby-architecture" width="70%" />
 
 ## 🤔 기술적 의사결정
 
