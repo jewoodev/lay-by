@@ -69,15 +69,23 @@
 
 ## 🚨 트러블슈팅
 
-### authenticate() 메서드에서 401 상태만을 반환하는 문제 [Wiki >](https://github.com/jewoodev/lay-by/wiki/%5BTroubleshooting%5D-JWT-%EB%A1%9C%EC%A7%81-%EB%AC%B8%EC%A0%9C)
+### JWT 로직 문제 [Wiki >](https://github.com/jewoodev/lay-by/wiki/%5BTroubleshooting%5D-JWT-%EB%A1%9C%EC%A7%81-%EB%AC%B8%EC%A0%9C)
+
+> Authentication을 만들어내는 과정에서 401 상태만을 반환하며 API 동작이 끝나는 문제가 발생되었습니다.
 
 ### 연관관계 매핑에서 비롯된 MSA 전환 문제 [Wiki >](https://github.com/jewoodev/lay-by/wiki/%5BTroubleshooting%5D-%EC%97%B0%EA%B4%80%EA%B4%80%EA%B3%84-%EB%A7%A4%ED%95%91%EC%97%90%EC%84%9C-%EB%B9%84%EB%A1%AF%EB%90%9C-MSA-%EC%A0%84%ED%99%98-%EB%AC%B8%EC%A0%9C)
 
+> ORM을 다룸에 있어서 연관관계 설정을 어떻게 다룰지에 대해 고민해볼 수 있었던 트러블슈팅 경험입니다.
+
 ### 재고 처리에서 생겨나는 동시성 문제 [Wiki >](https://github.com/jewoodev/lay-by/wiki/%5BTroubleshooting%5D-%EB%8F%99%EC%8B%9C%EC%84%B1-%EB%AC%B8%EC%A0%9C-%ED%95%B4%EA%B2%B0)
+
+> 동시성 문제를 바라보는 관점에서 스케일링 여부와 성능, 두 가지 기준에서 합리적인 해결 방안을 고민해볼 수 있었던 트러블슈팅 경험입니다.
 
 ## ⏩ 성능 개선
 
 ### 다수의 서비스가 통신할 필요가 있는 로직의 성능 개선 [Wiki >](https://github.com/jewoodev/lay-by/wiki/%5B%EC%84%B1%EB%8A%A5-%EA%B0%9C%EC%84%A0%5D-%EB%8B%A4%EC%88%98%EC%9D%98-%EC%84%9C%EB%B9%84%EC%8A%A4%EA%B0%80-%ED%86%B5%EC%8B%A0%ED%95%A0-%ED%95%84%EC%9A%94%EA%B0%80-%EC%9E%88%EB%8A%94-%EB%A1%9C%EC%A7%81%EC%9D%98-%EC%84%B1%EB%8A%A5-%EA%B0%9C%EC%84%A0)
+
+> 프로젝트의 설계와 요구사항을 충족시킬 수 있는 방법으로 Kafka를 선택한 이유와 그 결과를 서술합니다.
 
 ## 📚 API 명세서
 
