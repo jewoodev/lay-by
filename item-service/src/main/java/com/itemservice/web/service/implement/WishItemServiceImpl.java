@@ -5,6 +5,7 @@ import com.itemservice.domain.dto.WishItemDto;
 import com.itemservice.domain.dto.WishListDto;
 import com.itemservice.domain.entity.Item;
 import com.itemservice.domain.entity.WishItem;
+import com.itemservice.domain.vo.request.ItemStockControlRequest;
 import com.itemservice.domain.vo.request.ItemStockControlRequests;
 import com.itemservice.web.client.OrderServiceClient;
 import com.itemservice.web.exception.DatabaseErrorException;
@@ -146,17 +147,19 @@ public class WishItemServiceImpl implements WishItemService {
         List<WishItem> wishItems = wishItemRepository.findAllByUserId(userId);
 
         // 각 상품들을 몇 개씩 주문하길 선택했는지에 대한 VO.
-        ItemStockControlRequests itemStockControlRequests = ItemStockControlRequests.fromWishItems(wishItems);
+        ItemStockControlRequests requests = ItemStockControlRequests.fromWishItems(wishItems);
         // VO로 재고 처리를 해준다.
-        itemService.decreaseStock(itemStockControlRequests);
+        for (ItemStockControlRequest request : requests.getItemStockControlRequests()) {
+            itemService.decreaseStock(request);
+        }
 
         /* 이제 위시리스트 상품들로 Order를 만들기 위해 order-service에 통신을 통해 wishListDto를 보낼 차례다.
             wishListDto를 만들어서,                 */
         WishListDto wishListDto = WishListDto.fromWishItems(wishItems);
 
         // order-service에 전달해서 order가 생성되게 끔 한다.
-        kafkaProducer.send("make-order", wishListDto);
-//        orderServiceClient.makeOrder(userId, wishListDto);
+//        kafkaProducer.send("make-order", wishListDto);
+        orderServiceClient.makeOrder(userId, wishListDto);
 
         // 주문한 상품들은 위시리스트에서 삭제한다.
         for (WishItem wishItem : wishItems) {

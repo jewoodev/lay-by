@@ -2,7 +2,7 @@ package com.itemservice.web.controller;
 
 import com.itemservice.domain.dto.*;
 import com.itemservice.domain.vo.request.ItemRequest;
-import com.itemservice.domain.vo.request.ItemStockControlRequests;
+import com.itemservice.domain.vo.request.ItemStockControlRequest;
 import com.itemservice.domain.vo.request.WishItemRequest;
 import com.itemservice.domain.vo.response.ItemStockResponse;
 import com.itemservice.web.service.ItemService;
@@ -57,8 +57,8 @@ public class ItemController {
     }
 
     @PutMapping("/ic")
-    public ResponseEntity<ResponseDto> increaseStock(@RequestBody ItemStockControlRequests itemStockControlRequests) {
-        return itemService.increaseStock(itemStockControlRequests);
+    public ResponseEntity<ResponseDto> increaseStock(@RequestBody ItemStockControlRequest request) {
+        return itemService.increaseStock(request);
     }
 
 //    @PutMapping("/dc")

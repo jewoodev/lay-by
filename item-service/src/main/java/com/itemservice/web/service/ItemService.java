@@ -4,7 +4,6 @@ import com.itemservice.domain.dto.*;
 import com.itemservice.domain.entity.Item;
 import com.itemservice.domain.vo.request.ItemRequest;
 import com.itemservice.domain.vo.request.ItemStockControlRequest;
-import com.itemservice.domain.vo.request.ItemStockControlRequests;
 import com.itemservice.domain.vo.response.ItemStockResponse;
 import org.springframework.http.ResponseEntity;
 
@@ -24,9 +23,9 @@ public interface ItemService {
 
     ResponseEntity<ItemStockResponse> referStock(Long itemId);
 
-    ResponseEntity<ResponseDto> increaseStock(ItemStockControlRequests requests);
+    ResponseEntity<ResponseDto> increaseStock(ItemStockControlRequest request);
 
-    void decreaseStock(ItemStockControlRequests requests);
+    void decreaseStock(ItemStockControlRequest request);
 
-    void decreaseStockByOneRequest(ItemStockControlRequest request);
+    void decreaseStockWithPMCLock(ItemStockControlRequest request);
 }
