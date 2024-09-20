@@ -24,19 +24,8 @@ public class RedissonLockItemFacade {
 
         try {
             lock.lock(20, TimeUnit.SECONDS);
-
-//                if (!available) {
-//                    log.info("lock 획득 실패");
-//                    return;
-//                }
-
-//            log.info("락 획득, 로직 수행");
             itemService.decreaseStock(request);
-//            } catch (InterruptedException ex) {
-//                log.info("에러 발생");
-//                throw new RuntimeException(ex);
         } finally {
-//            log.info("락 해제");
             lock.unlock();
         }
     }
