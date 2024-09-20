@@ -1,37 +1,33 @@
 package com.itemservice.domain.repository;
 
 import com.itemservice.domain.common.RedisDao;
+import com.itemservice.domain.vo.request.ItemStockControlRequest;
 import com.itemservice.domain.vo.request.ItemStockControlRequestForRedis;
+import com.itemservice.web.service.ItemService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.redisson.api.RLock;
-import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Component;
 
-import java.util.concurrent.TimeUnit;
-
-@Slf4j
 @RequiredArgsConstructor
 @Component
-public class RedissonLockItemFacade {
+public class LettuceLockItemFacade {
 
-    private final RedissonClient redissonClient;
+    private final RedisRepository repository;
     private final RedisDao redisDao;
 
-    public void decrease(ItemStockControlRequestForRedis request) {
+    public void decrease(ItemStockControlRequestForRedis request) throws InterruptedException {
 
-        RLock lock = redissonClient.getLock(request.getItemId().toString());
+        Long chooseId = request.getItemId();
+        while (!repository.lock(chooseId)) {
+            Thread.sleep(100);
+        }
 
         try {
-            lock.lock(20, TimeUnit.SECONDS);
-
             String itemName = request.getItemName();
             String value = redisDao.getValue(itemName);
             int count = Integer.parseInt(value);
             redisDao.setValue(itemName, String.valueOf(count - request.getCount()));
         } finally {
-            lock.unlock();
+            repository.unlock(chooseId);
         }
     }
-
 }
