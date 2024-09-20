@@ -1,6 +1,8 @@
 package com.itemservice.domain.repository;
 
+import com.itemservice.domain.common.RedisDao;
 import com.itemservice.domain.vo.request.ItemStockControlRequest;
+import com.itemservice.domain.vo.request.ItemStockControlRequestForRedis;
 import com.itemservice.web.service.ItemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -10,9 +12,9 @@ import org.springframework.stereotype.Component;
 public class LettuceLockItemFacade {
 
     private final RedisRepository repository;
-    private final ItemService itemService;
+    private final RedisDao redisDao;
 
-    public void decrease(ItemStockControlRequest request) throws InterruptedException {
+    public void decrease(ItemStockControlRequestForRedis request) throws InterruptedException {
 
         Long chooseId = request.getItemId();
         while (!repository.lock(chooseId)) {
@@ -20,7 +22,10 @@ public class LettuceLockItemFacade {
         }
 
         try {
-            itemService.decreaseStock(request);
+            String itemName = request.getItemName();
+            String value = redisDao.getValue(itemName);
+            int count = Integer.parseInt(value);
+            redisDao.setValue(itemName, String.valueOf(count - request.getCount()));
         } finally {
             repository.unlock(chooseId);
         }

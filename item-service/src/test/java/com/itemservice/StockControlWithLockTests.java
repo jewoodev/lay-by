@@ -1,10 +1,12 @@
 package com.itemservice;
 
+import com.itemservice.domain.common.RedisDao;
 import com.itemservice.domain.entity.Item;
 import com.itemservice.domain.repository.ItemRepository;
 import com.itemservice.domain.repository.LettuceLockItemFacade;
 import com.itemservice.domain.repository.RedissonLockItemFacade;
 import com.itemservice.domain.vo.request.ItemStockControlRequest;
+import com.itemservice.domain.vo.request.ItemStockControlRequestForRedis;
 import com.itemservice.web.service.ItemService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.time.Duration;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -28,6 +31,9 @@ public class StockControlWithLockTests {
     private ItemRepository itemRepository;
 
     @Autowired
+    private RedisDao redisDao;
+
+    @Autowired
     private RedissonLockItemFacade redissonLockItemFacade;
 
     @Autowired
@@ -36,23 +42,33 @@ public class StockControlWithLockTests {
     private Long ITEM_ID = null;
 
     @BeforeEach
-    public void before() {
+    public void before_mysql() {
         Item save = itemRepository.save(new Item(null, "공책", 1000, "튼튼하다", 3000, null, null));
         ITEM_ID = save.getItemId();
     }
 
+//    @BeforeEach
+//    public void before_redis() {
+//        redisDao.setValue("공책", "3000", Duration.ofMillis(60 * 60 * 1000));
+//    }
+
     @AfterEach
-    public void after() {
+    public void after_mysql() {
         itemRepository.deleteAll();
     }
 
+//    @AfterEach
+//    public void after_redis() {
+//        redisDao.deleteValue("공책");
+//    }
+
     @Test
     public void 동시성_제어_비관적락() throws InterruptedException {
-        int threadCount = 3000;
-        ExecutorService executorService = Executors.newFixedThreadPool(1);
-        CountDownLatch latch = new CountDownLatch(threadCount);
+        int processingCnt = 1000;
+        ExecutorService executorService = Executors.newFixedThreadPool(30);
+        CountDownLatch latch = new CountDownLatch(processingCnt);
 
-        for (int i = 0; i < threadCount; i++) {
+        for (int i = 0; i < processingCnt; i++) {
             ItemStockControlRequest request = new ItemStockControlRequest(ITEM_ID, 1);
             executorService.submit(() -> {
                 try {
@@ -71,12 +87,12 @@ public class StockControlWithLockTests {
 
     @Test
     public void 동시성_제어_레디슨() throws InterruptedException {
-        int threadCount = 3000;
-        ExecutorService executorService = Executors.newFixedThreadPool(1);
-        CountDownLatch latch = new CountDownLatch(threadCount);
+        int processingCnt = 1000;
+        ExecutorService executorService = Executors.newFixedThreadPool(30);
+        CountDownLatch latch = new CountDownLatch(processingCnt);
 
-        for (int i = 0; i < threadCount; i++) {
-            ItemStockControlRequest request = new ItemStockControlRequest(ITEM_ID, 1);
+        for (int i = 0; i < processingCnt; i++) {
+            ItemStockControlRequestForRedis request = new ItemStockControlRequestForRedis(1L, "공책", 1);
             executorService.submit(() -> {
                 try {
                     redissonLockItemFacade.decrease(request);
@@ -87,24 +103,25 @@ public class StockControlWithLockTests {
         }
 
         latch.await();
-        int stockQuantity = itemService.findByItemId(ITEM_ID).getStockQuantity();
+        String value = redisDao.getValue("공책");
+        int stockQuantity = Integer.parseInt(value);
 
         assertEquals(0, stockQuantity);
     }
 
     @Test
     public void 동시성_제어_레투스() throws InterruptedException {
-        int threadCount = 3000;
-        ExecutorService executorService = Executors.newFixedThreadPool(1);
-        CountDownLatch latch = new CountDownLatch(threadCount);
+        int processingCnt = 1000;
+        ExecutorService executorService = Executors.newFixedThreadPool(30);
+        CountDownLatch latch = new CountDownLatch(processingCnt);
 
-        for (int i = 0; i < threadCount; i++) {
-            ItemStockControlRequest request = new ItemStockControlRequest(ITEM_ID, 1);
+        for (int i = 0; i < processingCnt; i++) {
+            ItemStockControlRequestForRedis request = new ItemStockControlRequestForRedis(1L, "공책", 1);
             executorService.submit(() -> {
                 try {
                     lettuceLockItemFacade.decrease(request);
-                } catch (InterruptedException ex) {
-                    ex.printStackTrace();
+                } catch (InterruptedException e) {
+                    System.out.println("예외 발생: " + e.getMessage());
                 } finally {
                     latch.countDown();
                 }
@@ -112,7 +129,8 @@ public class StockControlWithLockTests {
         }
 
         latch.await();
-        int stockQuantity = itemService.findByItemId(ITEM_ID).getStockQuantity();
+        String value = redisDao.getValue("공책");
+        int stockQuantity = Integer.parseInt(value);
 
         assertEquals(0, stockQuantity);
     }
